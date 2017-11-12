@@ -1,14 +1,18 @@
-import nltk
-from nltk import tokenize
+import spacy
 
+nlp = spacy.load('en_core_web_sm')
 class Sentence:
     def __init__(self, text):
-        self.text = text
+        if type(text) == list:
+            self.text = nlp(' '.join(text))
+        else:
+            self.text = text
+            
         self.tags = []
-        for tag in nltk.pos_tag(text):
-            newTag = Sentence.convert_tag(tag[1])
-            if newTag != None and newTag not in self.tags:
-                self.tags.append(newTag)
+        for word in text:
+            tag = Sentence.convert_tag(word.tag_)
+            if tag != None and tag not in self.tags:
+                self.tags.append(tag)
                 
     def convert_tag(tag):
         if tag == 'CC':
@@ -28,7 +32,3 @@ class Sentence:
         
     def __str__(self):
         return ' '.join(self.text) + " " + str(self.tags)
-    
-
-def convert(sentence):
-    return Sentence(sentence, nltk.pos_tag(tokenize(sentence)))

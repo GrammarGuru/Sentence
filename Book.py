@@ -29,12 +29,3 @@ class Book:
     def save(self, filename):
         with open(filename, 'wb') as output:
             pickle.dump(self, output, pickle.HIGHEST_PROTOCOL)
-
-#book = Book("bryant-stories.txt")
-#book.save("books.pkl")
-#
-#with open('books.pkl', 'rb') as file:
-#    book = pickle.load(file)
-#    print(book.title)
-#    for i in book.sentences[0:50]:
-#        print(i)
