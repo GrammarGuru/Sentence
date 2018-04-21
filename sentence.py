@@ -1,6 +1,6 @@
 import en_core_web_sm
 from spacy import displacy
-from POS import POS
+from style import POS
 
 nlp = en_core_web_sm.load()
 NOUN_MODIFIERS = {'det', 'amod', 'poss', 'compound'}
@@ -11,8 +11,8 @@ INDIRECT_OBJECT = 'dative'
 PREDICATE_NOMINATIVE = 'attr'
 PREDICATE_ADJECTIVE = 'acomp'
 PREPOSITION = 'prep'
-PUNCTUATION = 'punct'
 ROOT = 'ROOT'
+
 
 class Sentence:
     def __init__(self, s):
@@ -34,12 +34,9 @@ class Sentence:
         index = self.dict[token]
         self.pos[index] = POS.Verb
         for child in token.children:
-            if child.dep_ == PUNCTUATION:
-                self.pos[self.dict[child]] = POS.Punctuation
-            elif child.dep_ in SUBJECTS:
+            if child.dep_ in SUBJECTS:
                 self._label_noun(child, tag=POS.Noun)
             elif child.dep_ in VERB_MODIFIERS:
-
                 self._fill(child, POS.Verb, prep=True)
             elif child.dep_ == DIRECT_OBJECT:
                 self._label_noun(child, tag=POS.DirectObject)
@@ -116,9 +113,5 @@ def display(s):
 
 
 if __name__ == '__main__':
-    # s = "They considered a visit to the car show"
-    # test(s)
-    # print(Sentence(s))
-    # display(s)
     while True:
         print(Sentence(input()))
