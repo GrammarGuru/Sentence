@@ -3,32 +3,30 @@ from spacy import displacy
 from style import POS
 
 nlp = en_core_web_sm.load()
-NOUN_MODIFIERS = {'det', 'amod', 'poss', 'compound'}
-VERB_MODIFIERS = {'aux', 'neg'}
-SUBJECTS = {'nsubj', 'csubj'}
+NOUN_MODIFIERS = {'det', 'amod', 'poss', 'compound', 'nmod', 'cc', 'conj'}
+VERB_MODIFIERS = {'aux', 'neg', 'auxpass'}
+SUBJECTS = {'nsubj', 'csubj', 'nsubjpass'}
 DIRECT_OBJECT = 'dobj'
 INDIRECT_OBJECT = 'dative'
 PREDICATE_NOMINATIVE = 'attr'
 PREDICATE_ADJECTIVE = 'acomp'
 PREPOSITION = 'prep'
 ROOT = 'ROOT'
+PUNCT = 'punct'
 
 
 class Sentence:
     def __init__(self, s):
         self.doc = nlp(s)
-        self.tags = set()
+        self.tags = {token.pos_ for token in self.doc}
         self.pos = [None] * len(self.doc)
         self.dict = {token: index for index, token in enumerate(self.doc)}
         self.prep_counter = 0
 
         self.label(self._get_root)
 
-    def is_valid(self, tags):
-        for token in self.doc:
-            if token.dep_ not in tags:
-                return False
-        return True
+    def is_valid(self):
+        return ('NOUN' in self.tags or 'PROPN' in self.tags) and 'VERB' in self.tags
 
     def label(self, token):
         index = self.dict[token]
@@ -76,7 +74,7 @@ class Sentence:
         for child in token.children:
             if child.dep_ == PREPOSITION:
                 tail = child
-            else:
+            elif child.dep_ != PUNCT:
                 self._label_prep(child)
 
         if tail is not None:
@@ -90,7 +88,7 @@ class Sentence:
         for child in token.children:
             if prep and child.dep_ == PREPOSITION:
                 tail = child
-            else:
+            elif child.dep_ != PUNCT:
                 self._fill(child, tag, prep)
 
         if tail is not None:
@@ -113,5 +111,9 @@ def display(s):
 
 
 if __name__ == '__main__':
+    s = "the man"
+    test(s)
+    print(Sentence(s))
+    display(s)
     while True:
         print(Sentence(input()))
