@@ -1,11 +1,12 @@
-import en_core_web_sm
+import spacy
 from spacy import displacy
 from style import POS
 
-nlp = en_core_web_sm.load()
+nlp = spacy.load('en_core_web_sm')
 NOUN_MODIFIERS = {'det', 'amod', 'poss', 'compound'}
 VERB_MODIFIERS = {'aux', 'neg'}
 SUBJECTS = {'nsubj', 'csubj'}
+CLAUSES = {'advcl', 'conj'}
 DIRECT_OBJECT = 'dobj'
 INDIRECT_OBJECT = 'dative'
 PREDICATE_NOMINATIVE = 'attr'
@@ -49,6 +50,8 @@ class Sentence:
             elif child.dep_ == PREPOSITION:
                 self.prep_counter += 1
                 self._label_prep(child)
+            elif child.dep_ in CLAUSES:
+                self.label(child)
 
     @property
     def _get_root(self):
@@ -113,5 +116,9 @@ def display(s):
 
 
 if __name__ == '__main__':
+    s = "The man that took my son is smart"
+    test(s)
+    print(Sentence(s))
+    display(s)
     while True:
         print(Sentence(input()))
