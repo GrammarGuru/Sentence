@@ -17,23 +17,32 @@ class Worksheet:
         self.lines = [Sentence(line) for line in lines]
         self.doc = Document()
 
-    def render(self):
-        self._add_title()
+    def render(self, key=True):
+        self.doc = Document()
+        if key:
+            title = self.title + ' (Key)'
+        else:
+            title = self.title
+        self._add_title(title)
         for line in self.lines:
-            self._add_line(line)
-        self.doc.save(self.title + '.docx')
+            self._add_line(line, key=key)
+        self.doc.save(title + '.docx')
 
 
-    def _add_title(self):
-        title = self.doc.add_heading(self.title + ' (Key)', 0)
+    def _add_title(self, text):
+        title = self.doc.add_heading(text, 0)
         title.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
 
-    def _add_line(self, line):
+    def _add_line(self, line, key=True):
         paragraph = self.doc.add_paragraph()
         self._format_paragraph(paragraph)
         run = None
         current_prep = -1
-        for index, (word, color) in enumerate(zip(line.doc, line.pos)):
+        if key:
+            pos = line.pos
+        else:
+            pos = [None] * len(line.pos)
+        for index, (word, color) in enumerate(zip(line.doc, pos)):
             if run is not None and str(word) not in PUNCT:
                 run = paragraph.add_run(' ')
                 self._format_run(run)
@@ -42,7 +51,7 @@ class Worksheet:
                     run = paragraph.add_run(str(word) + ')')
                 elif index > current_prep:
                     run = paragraph.add_run('(' + str(word))
-                    current_prep = rindex(line.pos, color)
+                    current_prep = rindex(pos, color)
                 else:
                     run = paragraph.add_run(str(word))
             else:
@@ -77,3 +86,4 @@ if __name__ == '__main__':
                        "The park's climate reaches extreme temperatures",
                        'This park looks totally different from the more populated eastern half of the state'])
     sheet.render()
+    sheet.render(key=False)
