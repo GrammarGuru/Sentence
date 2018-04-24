@@ -3,7 +3,35 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QToolTip, QPushButton, QD
 from PyQt5.QtGui import QFont
 from worksheet import Worksheet
 
-
+class Box:
+    def __init__(self, index, screen, height, remove_func):
+        self.index = index
+        self.box = QLineEdit(screen)
+        self.box.move(20, height)
+        self.box.resize(400, 40)
+        
+        self.close = QPushButton('X', screen)
+        self.close.clicked.connect(lambda x: remove_func(self.index))
+        self.close.resize(40, 40)
+        self.close.move(430, height)
+        
+        self.box.show()
+        self.close.show()
+        
+    def hide(self):
+        self.box.setParent(None)
+        self.close.setParent(None)
+        
+    def move(self, height):
+        self.box.move(20, height)
+        self.close.move(430, height)
+    
+    def text(self):
+        return self.box.text()
+    
+    def __str__(self):
+        return str(self.index) + ' ' + self.box.text()
+        
 class Model(QMainWindow):
     def __init__(self, width=1000, height=800):
         super().__init__()
@@ -28,7 +56,7 @@ class Model(QMainWindow):
         self.create_btn = QPushButton('Generate', self)
         self.create_btn.clicked.connect(self.generate)
         self.create_btn.resize(self.create_btn.sizeHint())
-        self.create_btn.move(self.width - 100, self.height - 50)
+        self.create_btn.move(self.width - 150, self.height - 100)
         
         self.resize(self.width, self.height)
         self.setWindowTitle('Sentence')
@@ -37,12 +65,18 @@ class Model(QMainWindow):
 
 
     def add_line(self):
-        box = QLineEdit(self)
-        box.move(20, 50 * (len(self.boxes) + 1))
-        box.resize(400, 40)
-        self.boxes.append(box)
+        index = len(self.boxes)
+        self.boxes.append(Box(index, self, 50 * (index + 1), self.remove_line))
         self.add_btn.move(20, 50 * (len(self.boxes) + 1))
-        box.show()
+        
+    def remove_line(self, index):
+        self.boxes[index].hide()
+        del self.boxes[index]
+        for i in range(index, len(self.boxes)):
+            self.boxes[i].index = i
+            self.boxes[i].move(50 * (i + 1))
+            
+        self.add_btn.move(20, 50 * (len(self.boxes) + 1))
 
 
     def show_dialog(self):

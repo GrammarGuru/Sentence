@@ -59,8 +59,6 @@ class Sentence:
                 return token
         RuntimeError()
 
-
-
     def _label_noun(self, token, tag=POS.Noun):
         index = self.dict[token]
         self.pos[index] = tag
