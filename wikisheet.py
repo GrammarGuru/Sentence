@@ -11,6 +11,10 @@ pattern = re.compile(r"[\w\d\s.,]+")
 class Wikisheet(Worksheet):
     def __init__(self, title=None, size=10):
         super().__init__()
+        page = self.get_lines(title, size)
+        self.lines = [Sentence(line) for line in page]
+    
+    def get_lines(self, title=None, size=10):
         if title is None:
             page = None
             while page is None:
@@ -24,9 +28,7 @@ class Wikisheet(Worksheet):
             page = wikipedia.page(self.title).content
 
         page = [line for line in sent_tokenize(page) if self._is_valid(line)]
-        self.lines = [Sentence(line) for line in random.sample(page, min(size, len(page)))]
-        for line in self.lines:
-            print(line.doc)
+        return random.sample(page, min(size, len(page)))
 
     def _is_valid(self, line):
         return bool(pattern.fullmatch(line))

@@ -2,6 +2,7 @@ import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QToolTip, QPushButton, QDesktopWidget, QLineEdit, QMessageBox
 from PyQt5.QtGui import QFont
 from worksheet import Worksheet
+from wikisheet import Wikisheet
 
 class Box:
     def __init__(self, index, screen, height, remove_func):
@@ -28,6 +29,9 @@ class Box:
     
     def text(self):
         return self.box.text()
+    
+    def setText(self, text):
+        self.box.setText(text)
     
     def __str__(self):
         return str(self.index) + ' ' + self.box.text()
@@ -56,7 +60,12 @@ class Model(QMainWindow):
         self.create_btn = QPushButton('Generate', self)
         self.create_btn.clicked.connect(self.generate)
         self.create_btn.resize(self.create_btn.sizeHint())
-        self.create_btn.move(self.width - 150, self.height - 100)
+        self.create_btn.move(self.width - 150, self.height - 80)
+        
+        self.wiki_btn = QPushButton('Wikipedia', self)
+        self.wiki_btn.clicked.connect(self.get_wiki)
+        self.wiki_btn.resize(self.wiki_btn.sizeHint())
+        self.wiki_btn.move(self.width - 260, self.height - 80)
         
         self.resize(self.width, self.height)
         self.setWindowTitle('Sentence')
@@ -69,6 +78,16 @@ class Model(QMainWindow):
         self.boxes.append(Box(index, self, 50 * (index + 1), self.remove_line))
         self.add_btn.move(20, 50 * (len(self.boxes) + 1))
         
+    def get_wiki(self):
+        self.statusBar().showMessage('Grabbing sentences')
+        sheet = Wikisheet()
+        lines = sheet.get_lines(size=len(self.boxes))
+        for i in range(len(lines)):
+            if len(self.boxes[i].text()) == 0:
+                self.boxes[i].setText(lines[i])
+        self.show_dialog('Sentences generated')
+        self.statusBar().showMessage('Ready')
+        
     def remove_line(self, index):
         self.boxes[index].hide()
         del self.boxes[index]
@@ -79,10 +98,10 @@ class Model(QMainWindow):
         self.add_btn.move(20, 50 * (len(self.boxes) + 1))
 
 
-    def show_dialog(self):
+    def show_dialog(self, message):
         msg = QMessageBox(self)
         msg.setIcon(QMessageBox.Information)
-        msg.setText("Worksheet has been created.")
+        msg.setText(message)
         msg.setStandardButtons(QMessageBox.Ok)
         msg.show()
 
@@ -92,7 +111,7 @@ class Model(QMainWindow):
         questions = [line.replace(",", "") for line in lines]
         Worksheet(questions).render(key=False)
         Worksheet(lines).render(key=True)
-        self.show_dialog()
+        self.show_dialog("Worksheet has been created.")
         self.statusBar().showMessage('Ready')
 
     def get_data(self):
