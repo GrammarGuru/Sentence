@@ -123,7 +123,7 @@ class Model(QMainWindow):
         for box in self.boxes:
             text = box.text()
             if len(text) != 0:
-                lines.append(box.text())
+                lines.append(text)
         return lines
 
     def center(self):
