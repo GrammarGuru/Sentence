@@ -3,6 +3,7 @@ from sentence import Sentence
 from docx.shared import Pt
 from style import POS
 from docx.enum.text import WD_LINE_SPACING, WD_PARAGRAPH_ALIGNMENT
+from docx.enum.style import WD_STYLE_TYPE
 
 PUNCT = {',', '.', '-', "'"}
 
@@ -14,6 +15,7 @@ def rindex(lst, val):
 class Worksheet:
     def __init__(self, lines=[], title='Sentence Worksheet'):
         self.title = title
+        self.font = 'Times New Roman'
         self.lines = [Sentence(line) for line in lines]
         self.doc = Document()
 
@@ -24,18 +26,34 @@ class Worksheet:
         else:
             title = self.title
         self._add_title(title)
+        self._add_instructions()
+        self._add_title('')
         for line in self.lines:
             self._add_line(line, key=key)
         self.doc.save(title + '.docx')
 
 
     def _add_title(self, text):
-        title = self.doc.add_heading(text, 0)
+        title = self.doc.add_paragraph(text)
         title.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+        font = title.style.font
+        font.name = self.font
+        font.size = Pt(16)
+        font.bold = True
+
+    def _add_instructions(self):
+        line = self.doc.add_paragraph()
+        font = line.style.font
+        font.name = self.font
+        font.size = Pt(11)
+        label = line.add_run('Label: ')
+        self._format_run(label, font_size=11)
+        label.bold = True
+        self._format_run(line.add_run('Subject, Verb, PN, PA, DO, IO, (prepositional phrase)'), font_size=11)
 
     def _add_line(self, line, key=True):
-        paragraph = self.doc.add_paragraph()
-        self._format_paragraph(paragraph)
+        paragraph = self.doc.add_paragraph(style='List Number')
+        paragraph.style.font.bold = False
         run = None
         current_prep = -1
         if key:
@@ -61,18 +79,15 @@ class Worksheet:
         if str(line.doc[-1]) != '.':
             paragraph.add_run('.')
 
-    @staticmethod
-    def _format_paragraph(paragraph):
-        paragraph.style = 'List Number'
-        format = paragraph.paragraph_format
-        format.line_spacing_rule = WD_LINE_SPACING.DOUBLE
+        self.doc.add_paragraph().style.font.size = Pt(13)
 
-    @staticmethod
-    def _format_run(run, color=None, font='Times New Roman', font_size=Pt(14)):
+
+    def _format_run(self, run, color=None, font_size=13):
         if type(color) == POS:
             run.font.color.rgb = color.value
-        run.font.name = font
-        run.font.size = font_size
+        run.bold = False
+        run.font.name = self.font
+        run.font.size = Pt(font_size)
 
 
 
@@ -86,4 +101,3 @@ if __name__ == '__main__':
                        "The park's climate reaches extreme temperatures",
                        'This park looks totally different from the more populated eastern half of the state'])
     sheet.render()
-    sheet.render(key=False)

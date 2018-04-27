@@ -109,10 +109,14 @@ class Model(QMainWindow):
         self.statusBar().showMessage('Generating documents')
         lines = self.get_data()
         questions = [line.replace(",", "") for line in lines]
-        Worksheet(questions).render(key=False)
-        Worksheet(lines).render(key=True)
-        self.show_dialog("Worksheet has been created.")
+        try:
+            Worksheet(questions).render(key=False)
+            Worksheet(lines).render(key=True)
+            self.show_dialog("Worksheet has been created.")
+        except:
+            self.show_dialog("Error: Make sure you close your word document before generating.")
         self.statusBar().showMessage('Ready')
+
 
     def get_data(self):
         lines = []
