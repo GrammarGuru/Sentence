@@ -4,10 +4,10 @@ from style import POS
 
 
 nlp = spacy.load('en_core_web_sm')
-NOUN_MODIFIERS = {'det', 'amod', 'poss', 'compound'}
-VERB_MODIFIERS = {'aux', 'neg'}
-SUBJECTS = {'nsubj', 'csubj'}
-CLAUSES = {'advcl', 'conj'}
+NOUN_MODIFIERS = {'det', 'amod', 'poss', 'compound', 'nummod'}
+VERB_MODIFIERS = {'aux', 'neg', 'auxpass'}
+SUBJECTS = {'nsubj', 'nsubjpass', 'csubj', 'csubjpass'}
+CLAUSES = {'advcl', 'conj', 'ccomp', 'acl'}
 DIRECT_OBJECT = 'dobj'
 INDIRECT_OBJECT = 'dative'
 PREDICATE_NOMINATIVE = 'attr'
@@ -30,6 +30,10 @@ class Sentence:
     def is_valid(self):
         return ('NOUN' in self.tags or 'PROPN' in self.tags) and 'VERB' in self.tags
 
+    @staticmethod
+    def is_clause(token):
+        return token.pos_ == 'VERB' and token.dep_ in CLAUSES
+
     def label(self, token):
         index = self.dict[token]
         self.pos[index] = POS.Verb
@@ -49,7 +53,7 @@ class Sentence:
             elif child.dep_ == PREPOSITION:
                 self.prep_counter += 1
                 self._label_prep(child)
-            elif child.dep_ in CLAUSES:
+            elif self.is_clause(child):
                 self.label(child)
 
     @property
@@ -68,13 +72,15 @@ class Sentence:
             elif child.dep_ == PREPOSITION:
                 self.prep_counter += 1
                 self._label_prep(child)
+            elif self.is_clause(child):
+                self.label(child)
 
     def _label_prep(self, token):
         index = self.dict[token]
         self.pos[index] = self.prep_counter
         tail = None
         for child in token.children:
-            if child.dep_ == PREPOSITION:
+            if child.dep_ == PREPOSITION and token.dep_ != PREPOSITION:
                 tail = child
             elif child.dep_ != PUNCT:
                 self._label_prep(child)
@@ -104,7 +110,7 @@ class Sentence:
 def test(s):
     doc = nlp(s)
     for token in doc:
-        print(token.text, token.dep_, token.head.text, list(token.children))
+        print(token.text, token.dep_, token.head.text, list(token.children), token.pos_, token.pos_ == 'VERB')
 
 
 def display(s):
@@ -115,5 +121,6 @@ def display(s):
 if __name__ == '__main__':
     while True:
         s = input()
+        test(s)
         print(Sentence(s))
         display(s)
