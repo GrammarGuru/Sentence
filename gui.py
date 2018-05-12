@@ -108,6 +108,7 @@ class Model(QMainWindow):
     def generate(self):
         self.statusBar().showMessage('Generating documents')
         lines = self.get_data()
+        print(lines)
         questions = [line.replace(",", "") for line in lines]
         try:
             Worksheet(questions).render(key=False)
