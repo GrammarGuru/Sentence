@@ -114,4 +114,6 @@ def display(s):
 
 if __name__ == '__main__':
     while True:
-        print(Sentence(input()))
+        s = input()
+        print(Sentence(s))
+        display(s)

@@ -8,6 +8,6 @@ def crawl(link):
     return sent_tokenize(article.text)
 
 if __name__ == '__main__':
-    lines = crawl("http://abcnews.go.com/US/wireStory/accused-serial-rapist-killer-undetected-working-cop-54741076")
+    lines = crawl("https://abcnews.go.com/International/wireStory/monitor-42-killed-israeli-strikes-syria-week-55115848")
     for line in lines:
         print(line)
