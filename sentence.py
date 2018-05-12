@@ -4,10 +4,10 @@ from style import POS
 
 
 nlp = spacy.load('en_core_web_sm')
-NOUN_MODIFIERS = {'det', 'amod', 'poss', 'compound'}
+NOUN_MODIFIERS = {'det', 'amod', 'poss', 'compound', 'nummod'}
 VERB_MODIFIERS = {'aux', 'neg'}
 SUBJECTS = {'nsubj', 'csubj'}
-CLAUSES = {'advcl', 'conj'}
+CLAUSES = {'advcl', 'conj', 'ccomp'}
 DIRECT_OBJECT = 'dobj'
 INDIRECT_OBJECT = 'dative'
 PREDICATE_NOMINATIVE = 'attr'
@@ -113,5 +113,7 @@ def display(s):
 
 
 if __name__ == '__main__':
-    while True:
-        print(Sentence(input()))
+    line = "On 16 April 2018, Prime Minister Malcolm Turnbull announced that Noonan would succeed Vice Admiral Tim Barrett as Chief of Navy in July 2018."
+    test(line)
+    print(Sentence(line))
+    display(line)
