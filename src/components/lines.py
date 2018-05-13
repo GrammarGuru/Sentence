@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QWidget, \
-    QLineEdit, QPushButton, QVBoxLayout, \
+    QTextEdit, QPushButton, QVBoxLayout, \
     QHBoxLayout, QApplication
 
 
@@ -8,8 +8,7 @@ class Lines(QWidget):
     def __init__(self):
         super().__init__()
         self.size = 0
-        self.unfilled = 0
-        self.layout = QVBoxLayout()
+        self.layout = QVBoxLayout(self)
         self.lines = []
 
         for i in range(5):
@@ -19,12 +18,9 @@ class Lines(QWidget):
         add_btn.clicked.connect(self.add_line)
         self.layout.addWidget(add_btn)
 
-        self.setLayout(self.layout)
-        self.show()
-
     def add_line(self):
         hbox = QHBoxLayout()
-        box = QLineEdit()
+        box = QTextEdit()
         self.lines.append(box)
         btn = QPushButton('X')
         btn.clicked.connect(lambda x: self.remove_line(hbox, box, btn))
@@ -41,7 +37,7 @@ class Lines(QWidget):
         for line in self.lines:
             if index == len(lines):
                 return
-            if not line.text():
+            if not line.toPlainText():
                 line.setText(lines[index])
                 index += 1
 
@@ -49,18 +45,22 @@ class Lines(QWidget):
         box.deleteLater()
         btn.deleteLater()
         line.deleteLater()
+        del self.lines[self.lines.index(box)]
         self.size -= 1
 
     def get_data(self):
         result = []
         for line in self.lines:
-            text = line.text()
+            text = line.toPlainText()
+            print("Debug")
+            print(type(text))
             if text:
-                result.append(result)
+                result.append(text)
         return result
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = Lines()
+    ex.show()
     sys.exit(app.exec_())

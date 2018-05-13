@@ -1,6 +1,6 @@
 from os import path
-from newscrawler import crawl
-from worksheet import Worksheet
+from src.newscrawler import crawl
+from src.worksheet import Worksheet
 
 FILENAME = 'debug.txt'
 LINK = 'https://abcnews.go.com/International/wireStory/monitor-42-killed-israeli-strikes-syria-week-55115848'

@@ -1,9 +1,8 @@
 from docx import Document
-from sentence import Sentence
+from src.sentence import Sentence
 from docx.shared import Pt
-from style import POS
-from docx.enum.text import WD_LINE_SPACING, WD_PARAGRAPH_ALIGNMENT
-from docx.enum.style import WD_STYLE_TYPE
+from src.style import POS
+from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 
 PUNCT = {',', '.', '-', "'"}
 

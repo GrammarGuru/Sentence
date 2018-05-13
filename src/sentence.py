@@ -1,6 +1,6 @@
 import spacy
 from spacy import displacy
-from style import POS
+from .style import POS
 
 
 nlp = spacy.load('en_core_web_sm')
@@ -19,6 +19,7 @@ PUNCT = 'punct'
 
 class Sentence:
     def __init__(self, s):
+        self.str = s
         self.doc = nlp(s)
         self.tags = {token.pos_ for token in self.doc}
         self.pos = [None] * len(self.doc)
@@ -28,7 +29,9 @@ class Sentence:
         self.label(self._get_root)
 
     def is_valid(self):
-        return ('NOUN' in self.tags or 'PROPN' in self.tags) and 'VERB' in self.tags
+        if '\n' in self.str:
+            return False
+        return self._get_root.pos_ == 'VERB' and POS.Noun in self.pos and POS.Verb in self.pos
 
     @staticmethod
     def is_clause(token):

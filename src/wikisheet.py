@@ -1,6 +1,6 @@
 import wikipedia
-from worksheet import Worksheet
-from sentence import Sentence
+from .worksheet import Worksheet
+from .sentence import Sentence
 import random
 from nltk import sent_tokenize
 import re
