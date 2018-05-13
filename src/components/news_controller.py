@@ -1,7 +1,9 @@
 import sys
-import newspaper
+from nltk import sent_tokenize
+from newspaper import Article
 import random
 import feedparser as fp
+from .link_label import LinkLabel
 
 from PyQt5.QtWidgets import QWidget, \
     QPushButton, QHBoxLayout, \
@@ -10,16 +12,31 @@ from PyQt5.QtWidgets import QWidget, \
 
 SOURCES = ["http://feeds.bbci.co.uk/news/rss.xml?edition=us#"]
 
-
 def is_valid(article):
     return article.title is not None and len(article.title.strip()) > 7
+
+
+def is_good_article(link):
+    print(link)
+    article = Article(link)
+    article.download()
+    article.parse()
+    return len(sent_tokenize(article.text)) > 10
+
+
+def get_articles(size=10):
+    links = []
+    for source in SOURCES:
+        paper = fp.parse(source)
+        links += [article for article in paper.entries[:10] if is_good_article(article.id)]
+    return random.sample(links, min(len(links), size))
 
 
 class NewsController(QWidget):
     def __init__(self, news_func):
         super().__init__()
         self.news_func = news_func
-        self.articles = self.get_articles()
+        self.articles = get_articles()
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
 
@@ -38,8 +55,7 @@ class NewsController(QWidget):
         top_stories_label = QLabel('Top Stories')
         self.layout.addWidget(top_stories_label)
         for index, article in enumerate(self.articles):
-            label = QLabel(article.title.strip())
-            label.mousePressEvent = lambda _: print("Click")
+            label = LinkLabel(article.title.strip(), article.id)
             grid.addWidget(label, index + 1, 0)
             btn = QPushButton('Add')
             callback = lambda x, link=article.id: self.send_link(x, link)
@@ -59,14 +75,6 @@ class NewsController(QWidget):
             msg.setText('Error: Check Link and Try Again')
             msg.setStandardButtons(QMessageBox.Ok)
             msg.show()
-
-    @staticmethod
-    def get_articles(size=10):
-        links = []
-        for source in SOURCES:
-            paper = fp.parse(source)
-            links += [article for article in paper.entries]
-        return random.sample(links, min(len(links), size))
 
 
 

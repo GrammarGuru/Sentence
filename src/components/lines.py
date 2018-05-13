@@ -1,26 +1,40 @@
 import sys
 from PyQt5.QtWidgets import QWidget, \
     QTextEdit, QPushButton, QVBoxLayout, \
-    QHBoxLayout, QApplication
+    QHBoxLayout, QApplication, QScrollArea
 
 
 class Lines(QWidget):
     def __init__(self):
         super().__init__()
         self.size = 0
-        self.layout = QVBoxLayout(self)
+        self.layout = QVBoxLayout()
         self.lines = []
 
-        for i in range(5):
+        for i in range(10):
             self.add_line()
 
+
+        container = QWidget()
+        container.setLayout(self.layout)
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(False)
+        scroll.setWidget(container)
+
+        layout = QVBoxLayout(self)
+        self.setLayout(layout)
+        layout.addWidget(scroll)
+
         add_btn = QPushButton('Add')
+        add_btn.resize(add_btn.minimumSize())
         add_btn.clicked.connect(self.add_line)
-        self.layout.addWidget(add_btn)
+        layout.addWidget(add_btn)
 
     def add_line(self):
         hbox = QHBoxLayout()
         box = QTextEdit()
+        box.setMaximumHeight(100)
+        box.setMinimumWidth(350)
         self.lines.append(box)
         btn = QPushButton('X')
         btn.clicked.connect(lambda x: self.remove_line(hbox, box, btn))
@@ -52,8 +66,6 @@ class Lines(QWidget):
         result = []
         for line in self.lines:
             text = line.toPlainText()
-            print("Debug")
-            print(type(text))
             if text:
                 result.append(text)
         return result
