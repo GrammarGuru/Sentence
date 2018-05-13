@@ -1,0 +1,15 @@
+{
+  "bbc": {
+    "rss": "http://feeds.bbci.co.uk/news/rss.xml",
+    "link": "http://www.bbc.com/news"
+  },
+
+  "washingtonpost": {
+    "rss": "http://feeds.washingtonpost.com/rss/world",
+    "link": "https://www.washingtonpost.com/"
+  },
+  "abc": {
+    "rss": "https://abcnews.go.com/abcnews/topstories",
+    "link": "https://abcnews.go.com/"
+  }
+}

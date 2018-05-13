@@ -3,6 +3,7 @@ from nltk import sent_tokenize
 from newspaper import Article
 import random
 import feedparser as fp
+import json
 from .link_label import LinkLabel
 
 from PyQt5.QtWidgets import QWidget, \
@@ -10,14 +11,11 @@ from PyQt5.QtWidgets import QWidget, \
     QVBoxLayout, QLabel, \
     QLineEdit, QMessageBox, QGridLayout, QApplication
 
-SOURCES = ["http://feeds.bbci.co.uk/news/rss.xml?edition=us#"]
-
 def is_valid(article):
     return article.title is not None and len(article.title.strip()) > 7
 
 
 def is_good_article(link):
-    print(link)
     article = Article(link)
     article.download()
     article.parse()
@@ -26,10 +24,12 @@ def is_good_article(link):
 
 def get_articles(size=10):
     links = []
-    for source in SOURCES:
-        paper = fp.parse(source)
-        links += [article for article in paper.entries[:10] if is_good_article(article.id)]
-    return random.sample(links, min(len(links), size))
+    with open('newspapers.json') as f:
+        sources = json.load(f)
+        for _, value in sources.items():
+            paper = fp.parse(value['rss'])
+            links += [article for article in random.sample(paper.entries, 5) if is_good_article(article.id)]
+    return random.sample(links, size)
 
 
 class NewsController(QWidget):
