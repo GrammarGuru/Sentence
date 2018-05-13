@@ -1,13 +1,14 @@
 import sys
 import newspaper
 import random
+import feedparser as fp
 
 from PyQt5.QtWidgets import QWidget, \
     QPushButton, QHBoxLayout, \
     QVBoxLayout, QLabel, \
     QLineEdit, QMessageBox, QGridLayout, QApplication
 
-SOURCES = ["http://www.bbc.com/news"]
+SOURCES = ["http://feeds.bbci.co.uk/news/rss.xml?edition=us#"]
 
 
 def is_valid(article):
@@ -41,7 +42,7 @@ class NewsController(QWidget):
             label.mousePressEvent = lambda _: print("Click")
             grid.addWidget(label, index + 1, 0)
             btn = QPushButton('Add')
-            callback = lambda x, link=article.url: self.send_link(x, link)
+            callback = lambda x, link=article.id: self.send_link(x, link)
             btn.clicked.connect(callback)
             grid.addWidget(btn, index + 1, 1)
         self.layout.addLayout(grid)
@@ -63,8 +64,8 @@ class NewsController(QWidget):
     def get_articles(size=10):
         links = []
         for source in SOURCES:
-            paper = newspaper.build(source, memoize_articles=False)
-            links += [article for article in paper.articles if is_valid(article)]
+            paper = fp.parse(source)
+            links += [article for article in paper.entries]
         return random.sample(links, min(len(links), size))
 
 
