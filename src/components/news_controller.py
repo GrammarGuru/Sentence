@@ -16,6 +16,7 @@ def is_valid(article):
 
 
 def is_good_article(link):
+    print(link)
     article = Article(link)
     article.download()
     article.parse()
@@ -28,8 +29,15 @@ def get_articles(size=10):
         sources = json.load(f)
         for _, value in sources.items():
             paper = fp.parse(value['rss'])
-            links += [article for article in random.sample(paper.entries, 5) if is_good_article(article.id)]
-    return random.sample(links, size)
+            links += [article for article in paper.entries]
+    result = []
+    while len(result) < size:
+        index = random.randint(0, len(links) - 1)
+        article = links[index]
+        if is_good_article(article.id):
+            result.append(article)
+            del links[index]
+    return result
 
 
 class NewsController(QWidget):
