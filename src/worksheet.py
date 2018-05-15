@@ -33,13 +33,13 @@ class Worksheet:
         self.lines = [Sentence(line) for line in lines]
         self.doc = Document()
 
-    def render(self, key=True):
+    def render(self):
         self.doc = Document()
         self._add_title(self.title)
         self._add_instructions()
         self._add_title('')
         for line in self.lines:
-            self._add_line(line, key=key)
+            self._add_line(line)
         self.doc.save(self.loc)
 
     def _add_title(self, text):
@@ -60,12 +60,12 @@ class Worksheet:
         label.bold = True
         self._format_run(line.add_run('Subject, Verb, PN, PA, DO, IO, (prepositional phrase)'), font_size=11)
 
-    def _add_line(self, line, key=True):
+    def _add_line(self, line):
         paragraph = self.doc.add_paragraph(style='List Number')
         paragraph.style.font.bold = False
         run = None
         current_prep = -1
-        if key:
+        if self.key:
             pos = line.pos
         else:
             pos = [None] * len(line.pos)

@@ -3,11 +3,12 @@ from .worksheet import Worksheet
 from .newscrawler import crawl
 from src.components.controller import Controller
 from src.components.lines import Lines
+from src.components.color_manager import ColorManager
 from PyQt5.QtWidgets import QMainWindow, \
     QToolTip, \
     QDesktopWidget, QHBoxLayout, \
     QMessageBox, QWidget, QVBoxLayout, \
-    QFileDialog
+    QFileDialog, QAction
 from PyQt5.QtGui import QFont
 
 
@@ -39,6 +40,13 @@ class Model(QMainWindow):
         vbox.addStretch(2)
         vbox.addWidget(self.controller)
         self.layout.addLayout(vbox)
+        
+        color_manager = ColorManager()
+        menu_bar = self.menuBar()
+        format_menu = menu_bar.addMenu('Format')
+        change_color = QAction('Edit Colors', self)
+        change_color.triggered.connect(lambda _: color_manager.show())
+        format_menu.addAction(change_color)
 
         self.resize(self.width, self.height)
         self.setWindowTitle('Sentence')

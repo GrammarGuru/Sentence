@@ -1,7 +1,8 @@
 import sys
 import json
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, \
-QVBoxLayout, QLabel, QPushButton, QApplication, QColorDialog
+QVBoxLayout, QLabel, QPushButton, \
+QApplication, QColorDialog, QMessageBox
 
 
 def load_styles(loc):
@@ -20,6 +21,7 @@ class ColorManager(QWidget):
         self.loc = loc
         self.styles = load_styles(loc)
         self.labels = {}
+        self.change = False
         
         self.layout = QVBoxLayout(self)
         for name, style in self.styles.items():
@@ -38,6 +40,7 @@ class ColorManager(QWidget):
         
     def update(self, pos):
         color = parse_rgb(QColorDialog.getColor().rgb())
+        self.change = True
         self.styles[pos]['rgb'] = color
         self.update_color(pos, color)
         
@@ -49,6 +52,15 @@ class ColorManager(QWidget):
     def save_state(self):
         with open(self.loc, 'w') as f:
             f.write(json.dumps(self.styles))
+            
+    def closeEvent(self, event):
+        print("Close Event")
+        if self.change:
+            reply = QMessageBox.question(self, 'Save changes', "Would you like to save changes?", QMessageBox.Yes, QMessageBox.No)
+            
+            if reply == QMessageBox.Yes:
+                self.save_state()
+        
         
         
 

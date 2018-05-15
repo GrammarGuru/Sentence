@@ -17,10 +17,13 @@ def is_valid(article):
 
 def is_good_article(link):
     print(link)
-    article = Article(link)
-    article.download()
-    article.parse()
-    return len(sent_tokenize(article.text)) > 10
+    try:
+        article = Article(link)
+        article.download()
+        article.parse()
+        return len(sent_tokenize(article.text)) > 10
+    except:
+        return False
 
 
 def get_articles(size=10):
