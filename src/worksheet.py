@@ -1,8 +1,10 @@
 from docx import Document
+from docx.shared import RGBColor
 from src.sentence import Sentence
 from docx.shared import Pt
 from src.style import POS
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
+import json
 
 PUNCT = {',', '.', '-', "'"}
 
@@ -10,6 +12,12 @@ PUNCT = {',', '.', '-', "'"}
 def rindex(lst, val):
     return len(lst) - 1 - lst[::-1].index(val)
 
+def load_color(rgb):
+    return RGBColor(*rgb)
+
+
+with open('style.json') as f:
+    styles = [load_color(style['rgb']) for style in json.load(f).values()]
 
 class Worksheet:
     def __init__(self, lines=[], title='Sentence Worksheet', loc='Worksheet.docx', key=False):
@@ -84,7 +92,7 @@ class Worksheet:
 
     def _format_run(self, run, color=None, font_size=13):
         if type(color) == POS:
-            run.font.color.rgb = color.value
+            run.font.color.rgb = styles[color.value]
         run.bold = False
         run.font.name = self.font
         run.font.size = Pt(font_size)

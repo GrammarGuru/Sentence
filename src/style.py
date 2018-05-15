@@ -1,11 +1,10 @@
 from enum import Enum
-from docx.shared import RGBColor
-
+import json
 
 class POS(Enum):
-    Noun = RGBColor(58, 124, 165)  # Blue
-    Verb = RGBColor(105, 143, 63)  # Green
-    DirectObject = RGBColor(255, 210, 63)  # Yellow
-    IndirectObject = RGBColor(211, 78, 36)  # Orange
-    PredicateNominative = RGBColor(251, 172, 190)  # Pink
-    PredicateAdjective = RGBColor(143, 57, 133)   # Purple
+    Noun = 0  # Blue
+    Verb = 1  # Green
+    DirectObject = 2  # Yellow
+    IndirectObject = 3  # Orange
+    PredicateNominative = 4  # Pink
+    PredicateAdjective = 5   # Purple
