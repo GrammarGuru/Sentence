@@ -12,25 +12,27 @@ def rindex(lst, val):
 
 
 class Worksheet:
-    def __init__(self, lines=[], title='Sentence Worksheet'):
-        self.title = title
+    def __init__(self, lines=[], title='Sentence Worksheet', loc='Worksheet.docx', key=False):
+        self.key = key
+        if key:
+            index = loc.rindex('.')
+            self.loc = loc[:index] + '(Key)' + loc[index:]
+            self.title = title + ' (Key)'
+        else:
+            self.loc = loc
+            self.title = title
         self.font = 'Times New Roman'
         self.lines = [Sentence(line) for line in lines]
         self.doc = Document()
 
     def render(self, key=True):
         self.doc = Document()
-        if key:
-            title = self.title + ' (Key)'
-        else:
-            title = self.title
-        self._add_title(title)
+        self._add_title(self.title)
         self._add_instructions()
         self._add_title('')
         for line in self.lines:
             self._add_line(line, key=key)
-        self.doc.save(title + '.docx')
-
+        self.doc.save(self.loc)
 
     def _add_title(self, text):
         title = self.doc.add_paragraph(text)
@@ -79,7 +81,6 @@ class Worksheet:
             paragraph.add_run('.')
 
         self.doc.add_paragraph().style.font.size = Pt(13)
-
 
     def _format_run(self, run, color=None, font_size=13):
         if type(color) == POS:

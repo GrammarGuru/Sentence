@@ -34,9 +34,10 @@ class Lines(QWidget):
         hbox = QHBoxLayout()
         box = QTextEdit()
         box.setMaximumHeight(100)
-        box.setMinimumWidth(350)
+        box.setMinimumWidth(400)
         self.lines.append(box)
         btn = QPushButton('X')
+        btn.setMaximumSize(30, 30)
         btn.clicked.connect(lambda x: self.remove_line(hbox, box, btn))
         index = self.size
 

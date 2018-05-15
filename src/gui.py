@@ -6,10 +6,15 @@ from src.components.lines import Lines
 from PyQt5.QtWidgets import QMainWindow, \
     QToolTip, \
     QDesktopWidget, QHBoxLayout, \
-    QMessageBox, QWidget, QVBoxLayout
+    QMessageBox, QWidget, QVBoxLayout, \
+    QFileDialog
 from PyQt5.QtGui import QFont
 
-        
+
+def get_title(loc):
+    return loc[loc.rindex('/') + 1:loc.index('.')]
+
+
 class Model(QMainWindow):
     def __init__(self, width=1000, height=800):
         super().__init__()
@@ -51,17 +56,28 @@ class Model(QMainWindow):
         msg.setStandardButtons(QMessageBox.Ok)
         msg.show()
 
+    @property
+    def get_filename(self):
+        try:
+            return QFileDialog.getSaveFileName(self, 'Save Worksheet',
+                                           'C:\\', 'Microsoft Word Document (*.docx)')[0]
+        except:
+            self.show_dialog("Error: Invalid File Name")
+
     def generate(self):
+        file_loc = self.get_filename
+        if file_loc is None:
+            return
+        title = get_title(file_loc)
         self.statusBar().showMessage('Generating documents')
         lines = self.lines.get_data()
-        for line in lines:
-            print(type(line), line)
         questions = [line.replace(",", "") for line in lines]
         try:
-            Worksheet(questions).render(key=False)
-            Worksheet(lines).render(key=True)
+            Worksheet(questions, title=title, loc=file_loc, key=False).render()
+            Worksheet(lines, title=title, loc=file_loc, key=True).render()
             self.show_dialog("Worksheet has been created.")
-        except:
+        except Exception as inst:
+            print(inst)
             self.show_dialog("Error: Make sure you close your word document before generating.")
         self.statusBar().showMessage('Ready')
 
