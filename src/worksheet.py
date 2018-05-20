@@ -59,6 +59,12 @@ class Worksheet:
         self._format_run(label, font_size=11)
         label.bold = True
         self._format_run(line.add_run('Subject, Verb, PN, PA, DO, IO, (prepositional phrase)'), font_size=11)
+        line = self.doc.add_paragraph()
+        label = line.add_run('Insert ')
+        self._format_run(label, font_size=11)
+        label.bold = True
+        self._format_run(line.add_run('any needed commas, and circle them'), font_size=11)
+        
 
     def _add_line(self, line):
         paragraph = self.doc.add_paragraph(style='List Number')
@@ -70,7 +76,7 @@ class Worksheet:
         else:
             pos = [None] * len(line.pos)
         for index, (word, color) in enumerate(zip(line.doc, pos)):
-            if run is not None and str(word) not in PUNCT:
+            if run is not None and str(word)[0] not in PUNCT:
                 run = paragraph.add_run(' ')
                 self._format_run(run)
             if type(color) == int:

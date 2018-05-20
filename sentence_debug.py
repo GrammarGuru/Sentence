@@ -3,7 +3,7 @@ from src.newscrawler import crawl
 from src.worksheet import Worksheet
 
 FILENAME = 'debug.txt'
-LINK = 'https://abcnews.go.com/International/wireStory/monitor-42-killed-israeli-strikes-syria-week-55115848'
+LINK = 'http://www.bbc.com/news/world-middle-east-44131466'
 
 if __name__ == '__main__':
     if path.isfile(FILENAME):
@@ -17,4 +17,4 @@ if __name__ == '__main__':
                 f.write(line)
                 f.write('\n')
 
-    Worksheet(lines).render(key=True)
+    Worksheet(lines, key=True).render()

@@ -11,14 +11,18 @@ from PyQt5.QtWidgets import QMainWindow, \
     QFileDialog, QAction
 from PyQt5.QtGui import QFont
 
+background_sheet = """
+                    background-color: rgb(250, 250, 250)
+                   """
 
 def get_title(loc):
     return loc[loc.rindex('/') + 1:loc.index('.')]
 
 
 class Model(QMainWindow):
-    def __init__(self, width=1000, height=800):
+    def __init__(self, width=1200, height=800):
         super().__init__()
+        self.setStyleSheet(background_sheet)
         self.width = width
         self.height = height
         self.initUI()

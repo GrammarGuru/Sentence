@@ -4,10 +4,10 @@ from .style import POS
 
 
 nlp = spacy.load('en_core_web_sm')
-NOUN_MODIFIERS = {'det', 'amod', 'poss', 'compound', 'nummod'}
-VERB_MODIFIERS = {'aux', 'neg', 'auxpass'}
-SUBJECTS = {'nsubj', 'nsubjpass', 'csubj', 'csubjpass'}
-CLAUSES = {'advcl', 'conj', 'ccomp', 'acl'}
+NOUN_MODIFIERS = {'det', 'amod', 'poss', 'compound', 'nummod', 'conj', 'cc', 'predet', 'quantmod', 'nmod'}
+VERB_MODIFIERS = {'aux', 'neg', 'auxpass', 'advmod'}
+SUBJECTS = {'nsubj', 'nsubjpass', 'csubj', 'csubjpass', 'expl'}
+CLAUSES = {'advcl', 'conj', 'ccomp', 'acl', 'relcl'}
 DIRECT_OBJECT = 'dobj'
 INDIRECT_OBJECT = 'dative'
 PREDICATE_NOMINATIVE = 'attr'

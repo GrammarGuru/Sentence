@@ -4,6 +4,17 @@ from PyQt5.QtWidgets import QWidget, QHBoxLayout, \
 QVBoxLayout, QLabel, QPushButton, \
 QApplication, QColorDialog, QMessageBox
 
+sheet = """
+        color: rgb(66, 184, 221);
+        border-radius: 5px;
+        border: 2px solid rgb(66, 184, 221);
+        text-shadow 0 1px 1px rgba(0, 0, 0, 0.2);
+        background-color: rgb(255, 255, 255);
+        """
+        
+background_sheet = """
+                    background-color: rgb(250, 250, 250)
+                   """
 
 def load_styles(loc):
     with open(loc) as f:
@@ -18,6 +29,7 @@ def parse_rgb(rgb):
 class ColorManager(QWidget):
     def __init__(self, loc='style.json'):
         super().__init__()
+        self.setStyleSheet(background_sheet)
         self.loc = loc
         self.styles = load_styles(loc)
         self.labels = {}
@@ -34,15 +46,17 @@ class ColorManager(QWidget):
         self.update_color(name, color)
         layout.addWidget(label)
         btn = QPushButton('Edit')
+        btn.setStyleSheet(sheet)
         btn.clicked.connect(lambda _, pos=name: self.update(pos))
         layout.addWidget(btn)
         self.layout.addLayout(layout)
         
     def update(self, pos):
         color = parse_rgb(QColorDialog.getColor().rgb())
-        self.change = True
-        self.styles[pos]['rgb'] = color
-        self.update_color(pos, color)
+        if color != [0, 0, 0]:
+            self.change = True
+            self.styles[pos]['rgb'] = color
+            self.update_color(pos, color)
         
     def update_color(self, name, color):
         label = self.labels[name]

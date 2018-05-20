@@ -5,11 +5,14 @@ import random
 import feedparser as fp
 import json
 from .link_label import LinkLabel
-
 from PyQt5.QtWidgets import QWidget, \
     QPushButton, QHBoxLayout, \
     QVBoxLayout, QLabel, \
     QLineEdit, QMessageBox, QGridLayout, QApplication
+    
+background_sheet = """
+                    background-color: rgb(250, 250, 250)
+                   """
 
 def is_valid(article):
     return article.title is not None and len(article.title.strip()) > 7
@@ -46,6 +49,7 @@ def get_articles(size=10):
 class NewsController(QWidget):
     def __init__(self, news_func):
         super().__init__()
+        self.setStyleSheet(background_sheet)
         self.news_func = news_func
         self.articles = get_articles()
         self.layout = QVBoxLayout()
