@@ -1,9 +1,8 @@
 {
-  "bbc": {
-    "rss": "http://feeds.bbci.co.uk/news/rss.xml",
-    "link": "http://www.bbc.com/news"
+  "usatoday": {
+    "rss": "http://rssfeeds.usatoday.com/usatoday-NewsTopStories",
+    "link": "https://www.usatoday.com/"
   },
-
   "washingtonpost": {
     "rss": "http://feeds.washingtonpost.com/rss/world",
     "link": "https://www.washingtonpost.com/"
@@ -11,5 +10,13 @@
   "abc": {
     "rss": "https://abcnews.go.com/abcnews/topstories",
     "link": "https://abcnews.go.com/"
+  },
+  "huffingtonpost": {
+    "rss": "https://www.huffingtonpost.com/section/world-news/feed",
+    "link": "https://www.huffingtonpost.com/"
+  },
+  "cnn": {
+    "rss": "http://rss.cnn.com/rss/cnn_topstories.rss",
+    "link": "https://www.cnn.com//"
   }
 }

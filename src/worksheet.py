@@ -1,16 +1,18 @@
 from docx import Document
 from docx.shared import RGBColor
+from docx.shared import Pt, Inches
+from docx.enum.text import WD_PARAGRAPH_ALIGNMENT, WD_LINE_SPACING
 from src.sentence import Sentence
-from docx.shared import Pt
 from src.style import POS
-from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
+
 import json
 
-PUNCT = {',', '.', '-', "'"}
+PUNCT = {',', '.', '-', "'", '?'}
 
 
 def rindex(lst, val):
     return len(lst) - 1 - lst[::-1].index(val)
+
 
 def load_color(rgb):
     return RGBColor(*rgb)
@@ -19,9 +21,11 @@ def load_color(rgb):
 with open('style.json') as f:
     styles = [load_color(style['rgb']) for style in json.load(f).values()]
 
+
 class Worksheet:
-    def __init__(self, lines=[], title='Sentence Worksheet', loc='Worksheet.docx', key=False):
+    def __init__(self, lines=[], title='Sentence Worksheet', loc='Worksheet.docx', key=False, font_size=13):
         self.key = key
+        self.font_size = font_size
         if key:
             index = loc.rindex('.')
             self.loc = loc[:index] + '(Key)' + loc[index:]
@@ -35,14 +39,15 @@ class Worksheet:
 
     def render(self):
         self.doc = Document()
-        self._add_title(self.title)
-        self._add_instructions()
-        self._add_title('')
+        self.add_title(self.title)
+        self.add_instructions()
+        self.add_title('')
         for line in self.lines:
-            self._add_line(line)
+            self.add_line(line)
+        self.format_document()
         self.doc.save(self.loc)
 
-    def _add_title(self, text):
+    def add_title(self, text):
         title = self.doc.add_paragraph(text)
         title.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
         font = title.style.font
@@ -50,25 +55,20 @@ class Worksheet:
         font.size = Pt(16)
         font.bold = True
 
-    def _add_instructions(self):
-        line = self.doc.add_paragraph()
-        font = line.style.font
-        font.name = self.font
-        font.size = Pt(11)
-        label = line.add_run('Label: ')
-        self._format_run(label, font_size=11)
-        label.bold = True
-        self._format_run(line.add_run('Subject, Verb, PN, PA, DO, IO, (prepositional phrase)'), font_size=11)
-        line = self.doc.add_paragraph()
-        label = line.add_run('Insert ')
-        self._format_run(label, font_size=11)
-        label.bold = True
-        self._format_run(line.add_run('any needed commas, and circle them'), font_size=11)
-        
+    def add_instructions(self):
+        self.add_instruction('Label: ', 'Subject, Verb, PN, PA, DO, IO, (prepositional phrase)')
+        self.add_instruction('Insert ', 'any needed commas, and circle them')
 
-    def _add_line(self, line):
+    def add_instruction(self, label, instruction):
+        line = self.doc.add_paragraph()
+        label = line.add_run(label)
+        self.format_run(label, font_size=self.font_size)
+        label.bold = True
+        self.format_run(line.add_run(instruction), font_size=self.font_size)
+        
+    def add_line(self, line):
         paragraph = self.doc.add_paragraph(style='List Number')
-        paragraph.style.font.bold = False
+        self.format_paragraph(paragraph)
         run = None
         current_prep = -1
         if self.key:
@@ -78,7 +78,7 @@ class Worksheet:
         for index, (word, color) in enumerate(zip(line.doc, pos)):
             if run is not None and str(word)[0] not in PUNCT:
                 run = paragraph.add_run(' ')
-                self._format_run(run)
+                self.format_run(run)
             if type(color) == int:
                 if index == current_prep:
                     run = paragraph.add_run(str(word) + ')')
@@ -89,20 +89,31 @@ class Worksheet:
                     run = paragraph.add_run(str(word))
             else:
                 run = paragraph.add_run(str(word))
-            self._format_run(run, color=color)
+            self.format_run(run, color=color)
 
-        if str(line.doc[-1]) != '.':
+        if str(line.doc[-1]) not in PUNCT:
             paragraph.add_run('.')
 
-        self.doc.add_paragraph().style.font.size = Pt(13)
+    def format_document(self):
+        for section in self.doc.sections:
+            section.left_margin = Inches(0.5)
+            section.right_margin = Inches(0.5)
+            section.top_margin = Inches(0.5)
+            section.bottom_margin = Inches(0.5)
 
-    def _format_run(self, run, color=None, font_size=13):
+    def format_paragraph(self, p):
+        p.style.font.bold = False
+        p.style.font.size = Pt(self.font_size)
+        p.line_spacing_rule = WD_LINE_SPACING.DOUBLE
+        style = p.style.paragraph_format
+        style.line_spacing = Pt(self.font_size * 3)
+
+    def format_run(self, run, color=None, font_size=13):
         if type(color) == POS:
             run.font.color.rgb = styles[color.value]
         run.bold = False
         run.font.name = self.font
         run.font.size = Pt(font_size)
-
 
 
 if __name__ == '__main__':
