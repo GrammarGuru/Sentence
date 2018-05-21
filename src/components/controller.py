@@ -6,7 +6,6 @@ from PyQt5.QtWidgets import QWidget, \
 from PyQt5.QtGui import QFont
 
 
-    
 sheet = """
         color: rgb(66, 184, 221);
         border-radius: 5px;
