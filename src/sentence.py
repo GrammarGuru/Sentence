@@ -1,9 +1,9 @@
-import spacy
-from spacy import displacy
+import en_core_web_sm
+#from spacy import displacy
 from .style import POS
 
 
-nlp = spacy.load('en_core_web_sm')
+nlp = en_core_web_sm.load()
 NOUN_MODIFIERS = {'det', 'amod', 'poss', 'compound', 'nummod', 'conj', 'cc', 'predet', 'quantmod', 'nmod'}
 VERB_MODIFIERS = {'aux', 'neg', 'auxpass', 'advmod'}
 SUBJECTS = {'nsubj', 'nsubjpass', 'csubj', 'csubjpass', 'expl'}
@@ -110,15 +110,15 @@ class Sentence:
         return '{}\n{}'.format(list(self.doc), self.pos)
 
 
-def test(s):
-    doc = nlp(s)
-    for token in doc:
-        print(token.text, token.dep_, token.head.text, list(token.children), token.pos_, token.pos_ == 'VERB')
-
-
-def display(s):
-    doc = nlp(s)
-    displacy.serve(doc)
+#def test(s):
+#    doc = nlp(s)
+#    for token in doc:
+#        print(token.text, token.dep_, token.head.text, list(token.children), token.pos_, token.pos_ == 'VERB')
+#
+#
+#def display(s):
+#    doc = nlp(s)
+#    displacy.serve(doc)
 
 
 if __name__ == '__main__':

@@ -1,6 +1,7 @@
 import sys
 from .worksheet import Worksheet
-from .newscrawler import crawl
+sys.path.append("..")
+from server.newscrawler import crawl
 from src.components.controller import Controller
 from src.components.lines import Lines
 from src.components.color_manager import ColorManager
@@ -27,13 +28,12 @@ class Model(QMainWindow):
         self.height = height
         self.initUI()
 
-
     def initUI(self):
         QToolTip.setFont(QFont('SansSerif', 10))
         self.statusBar().showMessage('Ready')
 
         self.lines = Lines()
-        self.controller = Controller(generate_func=self.generate, news_func=self.add_news)
+        self.controller = Controller(generate_func=self.generate, link_func=self.add_link, lines_func=self.add_lines)
 
         self.setCentralWidget(QWidget(self))
         self.layout = QHBoxLayout()
@@ -57,9 +57,11 @@ class Model(QMainWindow):
         self.center()
         self.show()
 
-
-    def add_news(self, link):
+    def add_link(self, link):
         self.lines.fill(crawl(link))
+        
+    def add_lines(self, lines):
+        self.lines.fill(lines)
 
     def show_dialog(self, message):
         msg = QMessageBox(self)

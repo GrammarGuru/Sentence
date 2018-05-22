@@ -1,9 +1,6 @@
 import sys
-from nltk import sent_tokenize
-from newspaper import Article
 import random
-import feedparser as fp
-import json
+from firebase_admin import firestore
 from .link_label import LinkLabel
 from PyQt5.QtWidgets import QWidget, \
     QPushButton, QHBoxLayout, \
@@ -27,49 +24,29 @@ header_sheet = """
                """
 
 
-def is_valid(article):
-    return article.title is not None and len(article.title.strip()) > 7
-
-
-def is_good_article(link):
-    print(link)
-    try:
-        article = Article(link)
-        article.download()
-        article.parse()
-        return len(sent_tokenize(article.text)) > 10
-    except:
-        return False
-
-
 def get_articles(size=10):
-    links = []
-    with open('newspapers.json') as f:
-        sources = json.load(f)
-        for _, value in sources.items():
-            paper = fp.parse(value['rss'])
-            links += [article for article in paper.entries]
-    result = []
-    while len(result) < size:
-        index = random.randint(0, len(links) - 1)
-        article = links[index]
-        if is_good_article(article.id):
-            result.append(article)
-            del links[index]
-    return result
+    db = firestore.Client()
+    articles = [doc for doc in db.collection('News').get()]
+    return [doc.to_dict() for doc in random.sample(articles, size)]
+
+
+def format_label(label):
+    label.setStyleSheet(header_sheet)
+    label.setFont(QFont('Times New Roman', 13))
 
 
 class NewsController(QWidget):
-    def __init__(self, news_func):
+    def __init__(self, link_func, lines_func):
         super().__init__()
         self.setStyleSheet(background_sheet)
-        self.news_func = news_func
+        self.link_func = link_func
+        self.lines_func = lines_func
         self.articles = get_articles()
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
 
         manual_label = QLabel('Enter link')
-        self.format_label(manual_label)
+        format_label(manual_label)
         self.layout.addWidget(manual_label)
         manual_layout = QHBoxLayout()
         manual_line = QLineEdit()
@@ -83,26 +60,33 @@ class NewsController(QWidget):
         grid = QGridLayout()
         grid.setSpacing(10)
         top_stories_label = QLabel('Top Stories')
-        self.format_label(top_stories_label)
+        format_label(top_stories_label)
         self.layout.addWidget(top_stories_label)
         for index, article in enumerate(self.articles):
-            label = LinkLabel(article.title.strip(), article.id, font_size=12)
+            label = LinkLabel(article['title'].strip(), article['link'], font_size=12)
             grid.addWidget(label, index + 1, 0)
             btn = QPushButton('Add')
             btn.setStyleSheet(btn_sheet)
-            callback = lambda x, link=article.id: self.send_link(x, link)
+            callback = lambda x, lines=article['lines']: self.send_lines(x, lines)
             btn.clicked.connect(callback)
             grid.addWidget(btn, index + 1, 1)
         self.layout.addLayout(grid)
 
-    def format_label(self, label):
-        label.setStyleSheet(header_sheet)
-        label.setFont(QFont('Times New Roman', 13))
+    def send_lines(self, _, lines):
+        try:
+            self.lines_func(lines)
+            self.close()
+        except Exception as inst:
+            print(inst)
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Information)
+            msg.setText('Error: Try Again')
+            msg.setStandardButtons(QMessageBox.Ok)
+            msg.show()
 
     def send_link(self, _, link):
-        print('link', link)
         try:
-            self.news_func(link)
+            self.link_func(link)
             self.close()
         except Exception as inst:
             print(inst)
@@ -113,10 +97,9 @@ class NewsController(QWidget):
             msg.show()
 
 
-
 if __name__ == '__main__':
     func = lambda x: print("sadf")
     app = QApplication(sys.argv)
-    ex = NewsController(func)
+    ex = NewsController(func, func)
     ex.show()
     sys.exit(app.exec_())
