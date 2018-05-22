@@ -1,8 +1,23 @@
+import sys
 import json
 import feedparser as fp
 import random
 from newspaper import Article
 from nltk import sent_tokenize
+import en_core_web_sm
+sys.path.append("..")
+from src.sentence import Sentence
+
+nlp = en_core_web_sm.load()
+
+
+def crawl(link):
+    article = Article(link)
+    article.download()
+    article.parse()
+    doc = nlp(article.text)
+    lines = [sent.string.strip() for sent in doc.sents]
+    return [line for line in lines if Sentence(line).is_valid()]
 
 
 def is_good_article(link):

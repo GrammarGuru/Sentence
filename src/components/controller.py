@@ -20,16 +20,15 @@ background_sheet = """
 
 
 class Controller(QWidget):
-    def __init__(self, generate_func, news_func):
+    def __init__(self, generate_func, link_func, lines_func):
         super().__init__()
         self.setStyleSheet(background_sheet)
-        self.news_func = news_func
 
         self.layout = QHBoxLayout()
         self.setLayout(self.layout)
         self.layout.addStretch(1)
 
-        self.news_controller = NewsController(news_func)
+        self.news_controller = NewsController(link_func, lines_func)
         news_btn = QPushButton('News')
         news_btn.clicked.connect(self.show_news)
         news_btn.setStyleSheet(sheet)

@@ -4,13 +4,7 @@ from .sentence import Sentence
 
 nlp = spacy.load('en_core_web_sm')
 
-def crawl(link):
-    article = Article(link)
-    article.download()
-    article.parse()
-    doc = nlp(article.text)
-    lines = [sent.string.strip() for sent in doc.sents]
-    return [line for line in lines if Sentence(line).is_valid()]
+
 
 
 if __name__ == '__main__':
