@@ -2,9 +2,14 @@ import sys
 from cx_Freeze import setup, Executable
 
 files = ['newspapers.json', 'style.json']
-packages = ["os", "spacy"]
+packages = ["os", "spacy.lang.en", "pkg_resources._vendor"]
 excludes = ["tkinter"]
-modules = ["numpy.core._methods", "numpy.lib.format", "cymem", "murmurhash"]
+modules = ["numpy.core._methods", 
+           "numpy.lib.format", 
+           "cymem", 
+           "murmurhash",
+           "lxml._elementpath",
+           "cytoolz._signatures"]
 
 build_exe_options = {"packages": packages,
                      "excludes": excludes,
