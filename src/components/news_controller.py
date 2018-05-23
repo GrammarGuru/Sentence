@@ -5,7 +5,7 @@ from .link_label import LinkLabel
 from PyQt5.QtWidgets import QWidget, \
     QPushButton, QHBoxLayout, \
     QVBoxLayout, QLabel, \
-    QLineEdit, QMessageBox, QGridLayout, QApplication
+    QLineEdit, QMessageBox, QGridLayout, QApplication, QLayout
 from PyQt5.QtGui import QFont
 
 background_sheet = """
@@ -30,9 +30,25 @@ def get_articles(size=10):
     return [doc.to_dict() for doc in random.sample(articles, size)]
 
 
-def format_label(label):
+def create_label(name):
+    label = QLabel(name)
     label.setStyleSheet(header_sheet)
     label.setFont(QFont('Times New Roman', 13))
+    return label
+
+def create_btn(on_click):
+    btn = QPushButton('Add')
+    btn.setStyleSheet(btn_sheet)
+    btn.clicked.connect(on_click)
+    return btn
+
+def fill_layout(layout, *args):
+    for item in args:
+        if isinstance(item, QLayout):
+            layout.addLayout(item)
+        else:
+            layout.addWidget(item)
+    
 
 
 class NewsController(QWidget):
@@ -42,35 +58,25 @@ class NewsController(QWidget):
         self.link_func = link_func
         self.lines_func = lines_func
         self.articles = get_articles()
-        self.layout = QVBoxLayout()
-        self.setLayout(self.layout)
+        self.layout = QVBoxLayout(self)
 
-        manual_label = QLabel('Enter link')
-        format_label(manual_label)
-        self.layout.addWidget(manual_label)
+        manual_label = create_label('Enter Link')
         manual_layout = QHBoxLayout()
         manual_line = QLineEdit()
-        manual_layout.addWidget(manual_line)
-        manual_btn = QPushButton('Add')
-        manual_btn.setStyleSheet(btn_sheet)
-        manual_btn.clicked.connect(lambda: self.send_link(None, manual_line.text()))
-        manual_layout.addWidget(manual_btn)
-        self.layout.addLayout(manual_layout)
+        manual_btn = create_btn(lambda: self.send_link(None, manual_line.text()))
+        fill_layout(manual_layout, manual_line, manual_btn)
 
         grid = QGridLayout()
         grid.setSpacing(10)
-        top_stories_label = QLabel('Top Stories')
-        format_label(top_stories_label)
-        self.layout.addWidget(top_stories_label)
+        top_stories_label = create_label('Top Stories')
         for index, article in enumerate(self.articles):
             label = LinkLabel(article['title'].strip(), article['link'], font_size=12)
+            callback = lambda _, lines=article['lines']: self.send_lines(_, lines)
+            btn = create_btn(callback)
             grid.addWidget(label, index + 1, 0)
-            btn = QPushButton('Add')
-            btn.setStyleSheet(btn_sheet)
-            callback = lambda x, lines=article['lines']: self.send_lines(x, lines)
-            btn.clicked.connect(callback)
             grid.addWidget(btn, index + 1, 1)
-        self.layout.addLayout(grid)
+
+        fill_layout(self.layout, manual_label, manual_layout, top_stories_label, grid)
 
     def send_lines(self, _, lines):
         try:

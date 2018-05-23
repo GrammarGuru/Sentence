@@ -35,50 +35,77 @@ class Lines(QWidget):
         self.setStyleSheet(background_sheet)
         self.layout = QVBoxLayout()
         self.lines = []
-
+        
         for i in range(10):
             self.add_line()
+        
+        layout = self.get_layout()
 
-
+        add_btn = self.create_add_btn()
+        layout.addWidget(add_btn)
+        
+    def create_add_btn(self):
+        btn = QPushButton('Add')
+        btn.setStyleSheet(sheet)
+        font = QFont()
+        font.setPointSize(14)
+        btn.setFont(font)
+        btn.setMinimumHeight(40)
+        btn.resize(btn.minimumSize())
+        btn.clicked.connect(self.add_line)
+        return btn
+        
+    def get_layout(self):
         container = QWidget()
         container.setLayout(self.layout)
-        scroll = QScrollArea()
-        scroll.setWidgetResizable(False)
-        scroll.setWidget(container)
-
+        scroll = self.create_scroll_area(container)
+        
         layout = QVBoxLayout(self)
         self.setLayout(layout)
         layout.addWidget(scroll)
-
-        add_btn = QPushButton('Add')
-        add_btn.setStyleSheet(sheet)
-        font = QFont()
-        font.setPointSize(14)
-        add_btn.setFont(font)
-        add_btn.setMinimumHeight(40)
-        add_btn.resize(add_btn.minimumSize())
-        add_btn.clicked.connect(self.add_line)
-        layout.addWidget(add_btn)
-
-    def add_line(self):
-        hbox = QHBoxLayout()
+        return layout
+        
+    
+    @staticmethod
+    def create_scroll_area(container):
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(False)
+        scroll.setWidget(container)
+        return scroll
+        
+    @staticmethod
+    def create_text_box():
         box = QTextEdit()
         box.setStyleSheet(box_sheet)
         box.setMaximumHeight(100)
         box.setMinimumWidth(400)
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         box.setSizePolicy(sizePolicy)
-        self.lines.append(box)
+        return box
+    
+    @staticmethod
+    def create_remove_btn():
         btn = QPushButton('X')
         btn.setStyleSheet(add_sheet)
         btn.setMaximumSize(40, 40)
         btn.setMinimumSize(35, 35)
+        return btn
+    
+    @staticmethod
+    def fill_layout(layout, *args):
+        for widget in args:
+            layout.addWidget(widget)
+
+    def add_line(self):
+        hbox = QHBoxLayout()
+        
+        box = self.create_text_box()
+        self.lines.append(box)
+        btn = self.create_remove_btn()
         btn.clicked.connect(lambda x: self.remove_line(hbox, box, btn))
+        
         index = self.size
-
-        hbox.addWidget(box)
-        hbox.addWidget(btn)
-
+        self.fill_layout(hbox, box, btn)
         self.layout.insertLayout(index, hbox)
         self.size += 1
 

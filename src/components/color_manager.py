@@ -2,7 +2,8 @@ import sys
 import json
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, \
 QVBoxLayout, QLabel, QPushButton, \
-QApplication, QColorDialog, QMessageBox
+QApplication, QColorDialog, QMessageBox, QLayout
+
 
 sheet = """
         color: rgb(66, 184, 221);
@@ -25,6 +26,13 @@ def format_rgb(rgb):
 
 def parse_rgb(rgb):
     return [(rgb >> num) & 0xFF for num in range(16, -1, -8)]
+
+def fill_layout(layout, *args):
+    for item in args:
+        if isinstance(item, QLayout):
+            layout.addLayout(item)
+        else:
+            layout.addWidget(item)
     
 class ColorManager(QWidget):
     def __init__(self, loc='style.json'):
@@ -41,14 +49,16 @@ class ColorManager(QWidget):
     
     def add_pos(self, name, color):
         layout = QHBoxLayout()
+        
         label = QLabel(name)
         self.labels[name] = label
         self.update_color(name, color)
-        layout.addWidget(label)
+
         btn = QPushButton('Edit')
         btn.setStyleSheet(sheet)
         btn.clicked.connect(lambda _, pos=name: self.update(pos))
-        layout.addWidget(btn)
+        
+        fill_layout(layout, label, btn)
         self.layout.addLayout(layout)
         
     def update(self, pos):

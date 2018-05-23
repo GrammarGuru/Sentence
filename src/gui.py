@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import QMainWindow, \
     QToolTip, \
     QDesktopWidget, QHBoxLayout, \
     QMessageBox, QWidget, QVBoxLayout, \
-    QFileDialog, QAction
+    QFileDialog, QAction, QLayout
 from PyQt5.QtGui import QFont
 
 background_sheet = """
@@ -19,6 +19,12 @@ background_sheet = """
 def get_title(loc):
     return loc[loc.rindex('/') + 1:loc.index('.')]
 
+def fill_layout(layout, *args):
+    for item in args:
+        if isinstance(item, QLayout):
+            layout.addLayout(item)
+        else:
+            layout.addWidget(item)
 
 class Model(QMainWindow):
     def __init__(self, width=1200, height=800):
@@ -27,35 +33,49 @@ class Model(QMainWindow):
         self.width = width
         self.height = height
         self.initUI()
+        self.format_window()
+        self.show()
+        
+    def load_color_manager(self):
+        color_manager = ColorManager()
+        change_color = QAction('Edit Colors', self)
+        change_color.triggered.connect(lambda _: color_manager.show())
+        return change_color
+        
+    def add_toolbar(self):
+        menu_bar = self.menuBar()
+        color_action = self.load_color_manager()
+        format_menu = menu_bar.addMenu('Format')
+        format_menu.addAction(color_action)
+        
+    def set_layout(self):
+        self.setCentralWidget(QWidget(self))
+        self.layout = QHBoxLayout()
+        self.centralWidget().setLayout(self.layout)
+        
+    def load_components(self):
+        self.lines = Lines()
+        self.controller = Controller(generate_func=self.generate, 
+                                     link_func=self.add_link, 
+                                     lines_func=self.add_lines)
+        
+    def format_window(self):
+        self.resize(self.width, self.height)
+        self.setWindowTitle('Sentence')
+        self.center()
 
     def initUI(self):
         QToolTip.setFont(QFont('SansSerif', 10))
         self.statusBar().showMessage('Ready')
 
-        self.lines = Lines()
-        self.controller = Controller(generate_func=self.generate, link_func=self.add_link, lines_func=self.add_lines)
-
-        self.setCentralWidget(QWidget(self))
-        self.layout = QHBoxLayout()
-        self.centralWidget().setLayout(self.layout)
-
-        self.layout.addWidget(self.lines)
+        self.load_components()
+        self.set_layout()
+        self.add_toolbar()
+        
         vbox = QVBoxLayout()
         vbox.addStretch(2)
         vbox.addWidget(self.controller)
-        self.layout.addLayout(vbox)
-        
-        color_manager = ColorManager()
-        menu_bar = self.menuBar()
-        format_menu = menu_bar.addMenu('Format')
-        change_color = QAction('Edit Colors', self)
-        change_color.triggered.connect(lambda _: color_manager.show())
-        format_menu.addAction(change_color)
-
-        self.resize(self.width, self.height)
-        self.setWindowTitle('Sentence')
-        self.center()
-        self.show()
+        fill_layout(self.layout, self.lines, vbox)
 
     def add_link(self, link):
         self.lines.fill(crawl(link))
