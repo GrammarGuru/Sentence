@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QWidget, \
     QPushButton, \
     QHBoxLayout, QApplication, QLayout
 from PyQt5.QtGui import QFont
+from .widget_utils import fill_layout
 
 
 sheet = """
@@ -28,13 +29,6 @@ def create_btn(name, on_click):
     btn.setFont(font)
     return btn
 
-def fill_layout(layout, *args):
-    print(layout)
-    for item in args:
-        if isinstance(item, QLayout):
-            layout.addLayout(item)
-        else:
-            layout.addWidget(item)
 
 class Controller(QWidget):
     def __init__(self, generate_func, link_func, lines_func):

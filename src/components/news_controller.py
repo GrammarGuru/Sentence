@@ -2,6 +2,7 @@ import sys
 import random
 from firebase_admin import firestore
 from .link_label import LinkLabel
+from .widget_utils import fill_layout
 from PyQt5.QtWidgets import QWidget, \
     QPushButton, QHBoxLayout, \
     QVBoxLayout, QLabel, \
@@ -41,15 +42,6 @@ def create_btn(on_click):
     btn.setStyleSheet(btn_sheet)
     btn.clicked.connect(on_click)
     return btn
-
-def fill_layout(layout, *args):
-    for item in args:
-        if isinstance(item, QLayout):
-            layout.addLayout(item)
-        else:
-            layout.addWidget(item)
-    
-
 
 class NewsController(QWidget):
     def __init__(self, link_func, lines_func):

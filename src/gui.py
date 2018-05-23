@@ -5,6 +5,7 @@ from server.newscrawler import crawl
 from src.components.controller import Controller
 from src.components.lines import Lines
 from src.components.color_manager import ColorManager
+from src.components.widget_utils import fill_layout
 from PyQt5.QtWidgets import QMainWindow, \
     QToolTip, \
     QDesktopWidget, QHBoxLayout, \
@@ -18,13 +19,6 @@ background_sheet = """
 
 def get_title(loc):
     return loc[loc.rindex('/') + 1:loc.index('.')]
-
-def fill_layout(layout, *args):
-    for item in args:
-        if isinstance(item, QLayout):
-            layout.addLayout(item)
-        else:
-            layout.addWidget(item)
 
 class Model(QMainWindow):
     def __init__(self, width=1200, height=800):

@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QWidget, \
     QTextEdit, QPushButton, QVBoxLayout, \
     QHBoxLayout, QApplication, QScrollArea, QSizePolicy
 from PyQt5.QtGui import QFont
+from .widget_utils import fill_layout
 
 sheet = """
         color: rgb(66, 184, 221);
@@ -91,11 +92,6 @@ class Lines(QWidget):
         btn.setMinimumSize(35, 35)
         return btn
     
-    @staticmethod
-    def fill_layout(layout, *args):
-        for widget in args:
-            layout.addWidget(widget)
-
     def add_line(self):
         hbox = QHBoxLayout()
         
@@ -105,7 +101,7 @@ class Lines(QWidget):
         btn.clicked.connect(lambda x: self.remove_line(hbox, box, btn))
         
         index = self.size
-        self.fill_layout(hbox, box, btn)
+        fill_layout(hbox, box, btn)
         self.layout.insertLayout(index, hbox)
         self.size += 1
 
