@@ -18,7 +18,7 @@ def load_color(rgb):
     return RGBColor(*rgb)
 
 
-with open('style.json') as f:
+with open('config/style.json') as f:
     styles = [load_color(style['rgb']) for style in json.load(f).values()]
 
 

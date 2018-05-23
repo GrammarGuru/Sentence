@@ -10,7 +10,7 @@ sheet = """
         color: rgb(66, 184, 221);
         border-radius: 5px;
         border: 2px solid rgb(66, 184, 221);
-        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+        text-shadow 0 1px 1px rgba(0, 0, 0, 0.2);
         background-color: rgb(255, 255, 255);
         """
         
@@ -30,7 +30,7 @@ def parse_rgb(rgb):
 
     
 class ColorManager(QWidget):
-    def __init__(self, loc='style.json'):
+    def __init__(self, loc='config/style.json'):
         super().__init__()
         self.setStyleSheet(background_sheet)
         self.loc = loc

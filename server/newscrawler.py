@@ -33,7 +33,7 @@ def is_good_article(link):
 
 def get_articles(size=20):
     links = []
-    with open('../newspapers.json') as f:
+    with open('../config/newspapers.json') as f:
         sources = json.load(f)
         for _, value in sources.items():
             paper = fp.parse(value['rss'])
