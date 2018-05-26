@@ -79,7 +79,7 @@ class Lines(QWidget):
         box = QTextEdit()
         box.setStyleSheet(box_sheet)
         box.setMaximumHeight(100)
-        box.setMinimumWidth(400)
+        box.setMinimumWidth(420)
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         box.setSizePolicy(sizePolicy)
         return box

@@ -18,7 +18,7 @@ def load_color(rgb):
     return RGBColor(*rgb)
 
 
-with open('./config/style.json') as f:
+with open('config/style.json') as f:
     styles = [load_color(style['rgb']) for style in json.load(f).values()]
 
 
@@ -56,13 +56,16 @@ class Worksheet:
         font.bold = True
 
     def add_instructions(self):
-        self.add_instruction_with_colors('Label: ', ['Subject', 
-                                         'Verb', 
-                                         'PN', 
-                                         'PA', 
-                                         'DO', 
-                                         'IO', 
-                                         '(prepositional phrase)'], styles + [None])
+        if self.key:
+            self.add_instruction_with_colors('Label: ', ['Subject', 
+                                             'Verb', 
+                                             'PN', 
+                                             'PA', 
+                                             'DO', 
+                                             'IO', 
+                                             '(prepositional phrase)'], styles + [None])
+        else:
+            self.add_instruction('Label: ', 'Subject, Verb, PN, PA, DO, IO, (prepositional phrase)')
         self.add_instruction('Insert ', 'any needed commas, and circle them')
         
     def add_instruction_with_colors(self, subtitle, labels, colors):
