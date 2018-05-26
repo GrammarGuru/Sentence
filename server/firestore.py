@@ -1,7 +1,7 @@
 from firebase_admin import firestore
 import os
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '../auth.json'
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '../config/auth.json'
 
 
 class FireStore:

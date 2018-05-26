@@ -18,7 +18,7 @@ def load_color(rgb):
     return RGBColor(*rgb)
 
 
-with open('config/style.json') as f:
+with open('./config/style.json') as f:
     styles = [load_color(style['rgb']) for style in json.load(f).values()]
 
 
@@ -56,14 +56,31 @@ class Worksheet:
         font.bold = True
 
     def add_instructions(self):
-        self.add_instruction('Label: ', 'Subject, Verb, PN, PA, DO, IO, (prepositional phrase)')
+        self.add_instruction_with_colors('Label: ', ['Subject', 
+                                         'Verb', 
+                                         'PN', 
+                                         'PA', 
+                                         'DO', 
+                                         'IO', 
+                                         '(prepositional phrase)'], styles + [None])
         self.add_instruction('Insert ', 'any needed commas, and circle them')
-
-    def add_instruction(self, label, instruction):
+        
+    def add_instruction_with_colors(self, subtitle, labels, colors):
         line = self.doc.add_paragraph()
-        label = line.add_run(label)
-        self.format_run(label, font_size=self.font_size)
-        label.bold = True
+        subtitle = line.add_run(subtitle)
+        self.format_run(subtitle, font_size=self.font_size, bold=True)
+        comma = False
+        for label, color in zip(labels, colors):
+            if comma:
+                self.format_run(line.add_run(", "), font_size=self.font_size)
+            else:
+                comma = True
+            self.format_run(line.add_run(label), font_size=self.font_size, color=color)
+
+    def add_instruction(self, subtitle, instruction):
+        line = self.doc.add_paragraph()
+        subtitle = line.add_run(subtitle)
+        self.format_run(subtitle, font_size=self.font_size, bold=True)
         self.format_run(line.add_run(instruction), font_size=self.font_size)
         
     def add_line(self, line):
@@ -108,10 +125,12 @@ class Worksheet:
         style = p.style.paragraph_format
         style.line_spacing = Pt(self.font_size * 3)
 
-    def format_run(self, run, color=None, font_size=13):
+    def format_run(self, run, color=None, font_size=13, bold=False):
         if type(color) == POS:
             run.font.color.rgb = styles[color.value]
-        run.bold = False
+        elif type(color) == RGBColor:
+            run.font.color.rgb = color
+        run.bold = bold
         run.font.name = self.font
         run.font.size = Pt(font_size)
 

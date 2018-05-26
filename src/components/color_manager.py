@@ -80,8 +80,6 @@ class ColorManager(QWidget):
             if reply == QMessageBox.Yes:
                 self.save_state()
         
-        
-        
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
