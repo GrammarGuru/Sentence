@@ -10,8 +10,8 @@ from PyQt5.QtWidgets import QMainWindow, \
     QToolTip, \
     QDesktopWidget, QHBoxLayout, \
     QMessageBox, QWidget, QVBoxLayout, \
-    QFileDialog, QAction, QLayout
-from PyQt5.QtGui import QFont
+    QFileDialog, QAction
+from PyQt5.QtGui import QFont, QIcon
 
 background_sheet = """
                     background-color: rgb(250, 250, 250)
@@ -28,7 +28,6 @@ class Model(QMainWindow):
         self.height = height
         self.initUI()
         self.format_window()
-        self.show()
         
     def load_color_manager(self):
         color_manager = ColorManager()
@@ -56,6 +55,7 @@ class Model(QMainWindow):
     def format_window(self):
         self.resize(self.width, self.height)
         self.setWindowTitle('Sentence')
+        self.setWindowIcon(QIcon('doc_icon.ico'))
         self.center()
 
     def initUI(self):
