@@ -3,7 +3,8 @@ from docx.shared import RGBColor
 from docx.shared import Pt, Inches
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT, WD_LINE_SPACING
 from src.sentence import Sentence
-from src.style import POS
+from src.pos import POS
+from src.api.nlp import parse
 
 import json
 
@@ -18,7 +19,7 @@ def load_color(rgb):
     return RGBColor(*rgb)
 
 
-with open('config/style.json') as f:
+with open('../config/style.json') as f:
     styles = [load_color(style['rgb']) for style in json.load(f).values()]
 
 
@@ -34,7 +35,7 @@ class Worksheet:
             self.loc = loc
             self.title = title
         self.font = 'Times New Roman'
-        self.lines = [Sentence(line) for line in lines]
+        self.lines = [parse(line) for line in lines]
         self.doc = Document()
 
     def render(self):
@@ -92,10 +93,10 @@ class Worksheet:
         run = None
         current_prep = -1
         if self.key:
-            pos = line.pos
+            pos = line['pos']
         else:
-            pos = [None] * len(line.pos)
-        for index, (word, color) in enumerate(zip(line.doc, pos)):
+            pos = [None] * len(line['pos'])
+        for index, (word, color) in enumerate(zip(line['doc'], pos)):
             if run is not None and str(word)[0] not in PUNCT:
                 run = paragraph.add_run(' ')
                 self.format_run(run)
@@ -111,7 +112,7 @@ class Worksheet:
                 run = paragraph.add_run(str(word))
             self.format_run(run, color=color)
 
-        if str(line.doc[-1]) not in PUNCT:
+        if str(line['doc'][-1]) not in PUNCT:
             paragraph.add_run('.')
 
     def format_document(self):
@@ -146,5 +147,5 @@ if __name__ == '__main__':
                        "Big Bend's territory extends to the center of the deepest river channel",
                        'The rest of the land on the other side of the channel belongs to Mexico',
                        "The park's climate reaches extreme temperatures",
-                       'This park looks totally different from the more populated eastern half of the state'])
+                       'This park looks totally different from the more populated eastern half of the state'], key=True)
     sheet.render()

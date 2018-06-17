@@ -1,6 +1,6 @@
 import en_core_web_sm
 #from spacy import displacy
-from .style import POS
+from .pos import POS
 
 
 nlp = en_core_web_sm.load()
@@ -124,6 +124,6 @@ class Sentence:
 if __name__ == '__main__':
     while True:
         s = input()
-        test(s)
+        # test(s)
         print(Sentence(s))
-        display(s)
+        # display(s)

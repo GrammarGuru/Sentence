@@ -12,6 +12,11 @@ class FireStore:
     def add(self, title, data):
         self.collection.document(title).set(data)
 
+    def clear(self):
+        docs = self.collection.get()
+        for doc in docs:
+            doc.reference.delete()
+
     def get(self, title=None):
         if title is None:
             data = self.collection.get()

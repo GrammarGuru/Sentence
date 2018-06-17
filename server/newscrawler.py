@@ -21,11 +21,14 @@ def crawl(link):
 
 
 def is_good_article(link):
-    print(link)
+    if "/video/" in link or '/videos/' in link:
+        return False
     try:
         article = Article(link)
         article.download()
         article.parse()
+        if ';' in article.title:
+            return False
         return len(sent_tokenize(article.text)) > 10
     except:
         return False

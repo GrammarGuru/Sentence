@@ -16,6 +16,7 @@ def get_article(article):
 def load_articles(size=20):
     articles = get_articles(size=size)
     db = FireStore()
+    db.clear()
     for article in articles:
         data = get_article(article)
         db.add(article.title, data)
