@@ -2,7 +2,7 @@ import requests
 import json
 from ..pos import POS
 
-URL = 'https://us-central1-sentence-92ceb.cloudfunctions.net/'
+URL = 'https://sentence-92ceb.appspot.com/'
 
 pos_map = {
     'N': POS.Noun,
