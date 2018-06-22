@@ -11,12 +11,12 @@ const POS = {
     PN: 'PN',
     PA: 'PA'
 }
-const NOUN_MODIFIERS = new Set(['DET', 'AMOD', 'POSS', 'CONJ', 'CC', 'PREDET', 'QUANTMOD', 'NN', 'NUM', 'NUMBER']);
+const NOUN_MODIFIERS = new Set(['DET', 'AMOD', 'POSS', 'CONJ', 'CC', 'PREDET', 'QUANTMOD', 'NN', 'NUM', 'NUMBER', 'ABBREV', 'TMOD']);
 const VERB_MODIFIERS = new Set(['AUX', 'NEG', 'AUXPASS', 'ADVMOD']);
 const SUBJECTS = new Set(['NSUBJ', 'NSUBJPASS', 'CSUBJ', 'CSUBJPASS', 'EXPL']);
 const CLAUSES = new Set(['ADVCL', 'CONJ', 'CCOMP', 'ACL', 'RELCL']);
 const DIRECT_OBJECT = new Set(['DOBJ']);
-const INDIRECT_OBJECT = new Set(['DATIVE']);
+const INDIRECT_OBJECT = new Set(['IOBJ']);
 const PREDICATE_NOMINATIVE = new Set(['ATTR']);
 const PREDICATE_ADJECTIVE = new Set(['ACOMP']);
 const PREPOSITION = 'PREP';
@@ -29,23 +29,22 @@ class Parser {
         this.tags = new Array(tokens.length);
         this.dep = new Array(tokens.length);
         this.parents = new Array(tokens.length);
+        this.pos = new Array(tokens.length);
         this.children = tokens.map(() => []);
         const self = this;
+        let root = null;
         tokens.forEach((item, index) => {
             self.words[index] = item.text.content;
             self.tags[index] = item.partOfSpeech.tag;
             self.dep[index] = item.dependencyEdge.label;
+            if(self.dep[index] === 'ROOT')
+                root = index;
             self.parents[index] = self.words[item];
             self.children[item.dependencyEdge.headTokenIndex].push(index);
+            self.pos[index] = null;
         });
-        this.pos = tokens.map(() => null);
         this.prepCounter = 0;
-
-        this.label(this.getRoot());
-    }
-
-    getRoot() {
-        return this.dep.findIndex(item => item === 'ROOT');
+        this.label(root);
     }
 
     label(index) {
@@ -128,17 +127,36 @@ class Parser {
     }
 }
 
-module.exports = function(req, res) {
+async function _parseLine(text) {
     const document = {
-        content: req.body.text,
+        content: text,
         type: 'PLAIN_TEXT'
     }
-    client.analyzeSyntax({ document })
-        .then(parsedText => {
-            const tokens = parsedText[0].tokens;
-            const { words, pos } = new Parser(tokens);
-            res.send({ words, pos });
-            return { words, pos };
-        })
-        .catch(err => res.status(422).send(err));
+    const parsedText = await client.analyzeSyntax({ document });
+    const tokens = parsedText[0].tokens;
+    const { words, pos } = new Parser(tokens);
+    return { words, pos };
 }
+
+
+async function parseLine(req, res) {
+    try{
+        const result = await _parseLine(req.body.line);
+        res.send(result);
+    }
+    catch(err) {
+        res.status(422).send(err);
+    }
+}
+
+async function parseLines(req, res) {
+    try {
+        const result = await Promise.all(req.body.lines.map(line => _parseLine(line)));
+        res.send(result);
+    }
+    catch(err) {
+        res.status(422).send(err);
+    }
+}
+
+module.exports = { parseLine, parseLines }
