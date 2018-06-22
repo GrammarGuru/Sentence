@@ -2,13 +2,12 @@ from docx import Document
 from docx.shared import RGBColor
 from docx.shared import Pt, Inches
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT, WD_LINE_SPACING
-from src.sentence import Sentence
 from src.pos import POS
 from src.api.nlp import parse
 
 import json
 
-PUNCT = {',', '.', '-', "'", '?'}
+PUNCT = {',', '.', '-', "'", '?', "n't"}
 
 
 def rindex(lst, val):
@@ -36,6 +35,7 @@ class Worksheet:
             self.title = title
         self.font = 'Times New Roman'
         self.lines = [parse(line) for line in lines]
+        print(self.lines)
         self.doc = Document()
 
     def render(self):
@@ -60,10 +60,10 @@ class Worksheet:
         if self.key:
             self.add_instruction_with_colors('Label: ', ['Subject', 
                                              'Verb', 
-                                             'PN', 
-                                             'PA', 
-                                             'DO', 
-                                             'IO', 
+                                             'DO',
+                                             'IO',
+                                             'PN',
+                                             'PA',
                                              '(prepositional phrase)'], styles + [None])
         else:
             self.add_instruction('Label: ', 'Subject, Verb, PN, PA, DO, IO, (prepositional phrase)')
@@ -97,19 +97,19 @@ class Worksheet:
         else:
             pos = [None] * len(line['pos'])
         for index, (word, color) in enumerate(zip(line['doc'], pos)):
-            if run is not None and str(word)[0] not in PUNCT:
+            if run is not None and word not in PUNCT:
                 run = paragraph.add_run(' ')
                 self.format_run(run)
             if type(color) == int:
                 if index == current_prep:
-                    run = paragraph.add_run(str(word) + ')')
+                    run = paragraph.add_run(word + ')')
                 elif index > current_prep:
-                    run = paragraph.add_run('(' + str(word))
+                    run = paragraph.add_run('(' + word)
                     current_prep = rindex(pos, color)
                 else:
-                    run = paragraph.add_run(str(word))
+                    run = paragraph.add_run(word)
             else:
-                run = paragraph.add_run(str(word))
+                run = paragraph.add_run(word)
             self.format_run(run, color=color)
 
         if str(line['doc'][-1]) not in PUNCT:
@@ -147,5 +147,6 @@ if __name__ == '__main__':
                        "Big Bend's territory extends to the center of the deepest river channel",
                        'The rest of the land on the other side of the channel belongs to Mexico',
                        "The park's climate reaches extreme temperatures",
-                       'This park looks totally different from the more populated eastern half of the state'], key=True)
+                       'This park looks totally different from the more populated eastern half of the state',
+                       "It wasn't great."], key=True)
     sheet.render()
