@@ -1,4 +1,0 @@
-
-
-
-Categorization, Bounding Box, Polygonal Annotation, Line Annotation, Keypoint Annotation, Cuboid Annotation, Semantic Segmentation, Poly Mask Annotation, Contour Annotation

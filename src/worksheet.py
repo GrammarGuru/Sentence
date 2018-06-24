@@ -3,7 +3,7 @@ from docx.shared import RGBColor
 from docx.shared import Pt, Inches
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT, WD_LINE_SPACING
 from src.pos import POS
-from src.api.nlp import parse
+from src.api.nlp import parse_all
 
 import json
 
@@ -18,7 +18,7 @@ def load_color(rgb):
     return RGBColor(*rgb)
 
 
-with open('../config/style.json') as f:
+with open('config/style.json') as f:
     styles = [load_color(style['rgb']) for style in json.load(f).values()]
 
 
@@ -34,8 +34,7 @@ class Worksheet:
             self.loc = loc
             self.title = title
         self.font = 'Times New Roman'
-        self.lines = [parse(line) for line in lines]
-        print(self.lines)
+        self.lines = parse_all(lines)
         self.doc = Document()
 
     def render(self):
