@@ -1,22 +1,42 @@
 {
   "usatoday": {
     "rss": "http://rssfeeds.usatoday.com/usatoday-NewsTopStories",
-    "link": "https://www.usatoday.com/"
+    "world": "http://rssfeeds.usatoday.com/usatodaycomworld-topstories&x=1",
+    "sports": "http://rssfeeds.usatoday.com/usatodaycomsports-topstories&x=1",
+    "life": "http://rssfeeds.usatoday.com/usatoday-lifetopstories&x=1",
+    "money": "http://rssfeeds.usatoday.com/usatodaycommoney-topstories&x=1",
+    "tech": "http://rssfeeds.usatoday.com/usatoday-techtopstories&x=1",
+    "travel": "http://rssfeeds.usatoday.com/usatodaycomtravel-topstories&x=1"
   },
   "washingtonpost": {
     "rss": "http://feeds.washingtonpost.com/rss/world",
-    "link": "https://www.washingtonpost.com/"
+    "world": "http://feeds.washingtonpost.com/rss/world",
+    "sports": "http://feeds.washingtonpost.com/rss/sports",
+    "life": "http://feeds.washingtonpost.com/rss/lifestyle",
+    "money": "http://feeds.washingtonpost.com/rss/business",
   },
   "abc": {
     "rss": "https://abcnews.go.com/abcnews/topstories",
-    "link": "https://abcnews.go.com/"
+    "world": "https://abcnews.go.com/abcnews/internationalheadlines",
+    "sports": "https://abcnews.go.com/abcnews/sportsheadlines",
+    "money": "https://abcnews.go.com/abcnews/moneyheadlines",
+    "tech": "https://abcnews.go.com/abcnews/technologyheadlines",
+    "travel": "https://abcnews.go.com/abcnews/travelheadlines"
   },
   "huffingtonpost": {
     "rss": "https://www.huffingtonpost.com/section/world-news/feed",
-    "link": "https://www.huffingtonpost.com/"
+    "world": "https://www.huffingtonpost.com/section/world-news/feed",
+    "sports": "https://www.huffingtonpost.com/section/sports/feed",
+    "life": "https://www.huffingtonpost.com/dept/entertainment/feed",
+    "money": "https://www.huffingtonpost.com/section/money/feed",
+    "tech": "https://www.huffingtonpost.com/section/technology/feed",
+    "travel": "https://www.huffingtonpost.com/section/travel/feed"
   },
-  "cnn": {
-    "rss": "http://rss.cnn.com/rss/cnn_topstories.rss",
-    "link": "https://www.cnn.com//"
+  "time": {
+    "rss": "http://feeds2.feedburner.com/time/topstories",
+    "world": "http://feeds2.feedburner.com/time/world",
+    "life": "http://feeds2.feedburner.com/time/entertainment",
+    "money": "http://feeds2.feedburner.com/time/business",
+    "tech": "http://feeds.feedburner.com/timeblogs/nerd_world"
   }
 }
