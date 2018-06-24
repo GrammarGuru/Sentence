@@ -2,7 +2,8 @@ import requests
 import json
 from ..pos import POS
 
-URL = 'https://sentence-92ceb.appspot.com/'
+with open('../config/api.json') as f:
+    URL = json.load(f)['url']
 
 pos_map = {
     'N': POS.Noun,
@@ -21,6 +22,6 @@ def read_pos(tag):
 
 
 def parse(line):
-    data = json.loads(requests.post(URL + 'parseText', {'text': line}).text)
+    data = json.loads(requests.post(URL + 'parse', {'text': line}).text)
     pos = [read_pos(tag) for tag in data['pos']]
     return {'doc': data['words'], 'pos': pos}
