@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const { parseLine, parseLines } = require('./src/parser');
+const { parseLine, parseLines, isValid } = require('./src/parser');
 const getNews = require('./src/getNews');
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -8,6 +8,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.post('/parseLine', parseLine);
 app.post('/parseLines', parseLines)
 app.get('/getNews', getNews);
+app.post('/isValid', isValid);
 
 // Listen to the App Engine-specified port, or 8080 otherwise
 const PORT = process.env.PORT || 8080;

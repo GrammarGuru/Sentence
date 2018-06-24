@@ -127,6 +127,24 @@ class Parser {
     }
 }
 
+async function isValid(req, res) {
+    try {
+        const document = {
+            content: req.body.line,
+            type: 'PLAIN_TEXT'
+        }
+        const parsedText = await client.analyzeSyntax({ document });
+        const { tokens } = parsedText[0];
+        const root = tokens.find(token => token.dependencyEdge.label === 'ROOT');
+        if(root.partOfSpeech.tag !== 'VERB')
+            return res.send(false);
+        return res.send(tokens.some(token => SUBJECTS.has(token.dependencyEdge.label)));
+    }
+    catch(err) {
+        res.status(422).send(err);
+    }
+}
+
 async function _parseLine(text) {
     const document = {
         content: text,
@@ -159,4 +177,4 @@ async function parseLines(req, res) {
     }
 }
 
-module.exports = { parseLine, parseLines }
+module.exports = { parseLine, parseLines, isValid }
