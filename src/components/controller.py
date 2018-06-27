@@ -1,8 +1,8 @@
 import sys
-from .news_controller import NewsController
+from src.components.news_controller.topics import TopicController
 from PyQt5.QtWidgets import QWidget, \
     QPushButton, \
-    QHBoxLayout, QApplication, QLayout
+    QHBoxLayout, QApplication
 from PyQt5.QtGui import QFont
 from .widget_utils import fill_layout
 
@@ -19,6 +19,7 @@ background_sheet = """
                     background-color: rgb(250, 250, 250)
                    """
 
+
 def create_btn(name, on_click):
     btn = QPushButton(name)
     btn.clicked.connect(on_click)
@@ -31,21 +32,24 @@ def create_btn(name, on_click):
 
 
 class Controller(QWidget):
-    def __init__(self, generate_func, link_func, lines_func):
+    def __init__(self, data, generate_func, link_func, lines_func):
         super().__init__()
-        self.init_layout()
+        self.layout = self.init_layout()
         self.setStyleSheet(background_sheet)
-        self.news_controller = NewsController(link_func, lines_func)
+        self.topic_controller = TopicController(data, link_func, lines_func)
+
         news_btn = create_btn('News', self.show_news)
         generate_btn = create_btn('Generate', generate_func)
+
         fill_layout(self.layout, news_btn, generate_btn)
         
     def init_layout(self):
-        self.layout = QHBoxLayout(self)
-        self.layout.addStretch(1)
+        layout = QHBoxLayout(self)
+        layout.addStretch(1)
+        return layout
 
     def show_news(self):
-        self.news_controller.show()
+        self.topic_controller.show()
 
 
 if __name__ == '__main__':

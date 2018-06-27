@@ -23,8 +23,9 @@ def get_title(loc):
 
 
 class Model(QMainWindow):
-    def __init__(self, width=1200, height=800):
+    def __init__(self, data, width=1200, height=800):
         super().__init__()
+        self.data = data
         self.setStyleSheet(background_sheet)
         self.width = width
         self.height = height
@@ -50,7 +51,8 @@ class Model(QMainWindow):
         
     def load_components(self):
         self.lines = Lines()
-        self.controller = Controller(generate_func=self.generate, 
+        self.controller = Controller(data=self.data,
+                                     generate_func=self.generate,
                                      link_func=self.add_link, 
                                      lines_func=self.add_lines)
         

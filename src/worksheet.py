@@ -87,6 +87,7 @@ class Worksheet:
         self.format_run(line.add_run(instruction), font_size=self.font_size)
         
     def add_line(self, line):
+        print(line)
         paragraph = self.doc.add_paragraph(style='List Number')
         self.format_paragraph(paragraph)
         run = None
@@ -96,6 +97,7 @@ class Worksheet:
         else:
             pos = [None] * len(line['pos'])
         for index, (word, color) in enumerate(zip(line['doc'], pos)):
+            print('({})'.format(word))
             if run is not None and word not in PUNCT:
                 run = paragraph.add_run(' ')
                 self.format_run(run)

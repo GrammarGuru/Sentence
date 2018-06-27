@@ -1,7 +1,5 @@
 *.DS_Store
 .idea/
-*.gcloudignore
-*node_modules
 config/auth.json
 *__pycache__
 build/
