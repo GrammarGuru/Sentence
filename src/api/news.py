@@ -6,5 +6,10 @@ with open('config/api.json') as f:
 
 
 def get_data():
-    content = requests.get(URL + 'getNews').content
+    content = requests.get(URL + 'getNews').json()
+    return content
+
+
+def crawl(url):
+    content = requests.post(URL + 'scrape', data={'url': url}).content
     return json.loads(content)

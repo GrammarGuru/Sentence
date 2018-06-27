@@ -1,5 +1,5 @@
 import sys
-from src.components.news_controller.topics import TopicController
+from src.components.news_controller.topic_controller import TopicController
 from PyQt5.QtWidgets import QWidget, \
     QPushButton, \
     QHBoxLayout, QApplication
@@ -7,7 +7,7 @@ from PyQt5.QtGui import QFont
 from .widget_utils import fill_layout
 
 
-sheet = """
+btn_sheet = """
         color: rgb(66, 184, 221);
         border-radius: 5px;
         border: 2px solid rgb(66, 184, 221);
@@ -23,7 +23,7 @@ background_sheet = """
 def create_btn(name, on_click):
     btn = QPushButton(name)
     btn.clicked.connect(on_click)
-    btn.setStyleSheet(sheet)
+    btn.setStyleSheet(btn_sheet)
     btn.setMinimumSize(120, 40)
     font = QFont()
     font.setPointSize(12)

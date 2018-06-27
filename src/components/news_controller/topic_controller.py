@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QWidget, \
     QApplication
 from PyQt5.QtGui import QFont
 from src.components.widget_utils import fill_layout
-from src.components.news_controller.details import NewsController
+from src.components.news_controller.news_controller import NewsController
 
 background_sheet = """
                     background-color: rgb(250, 250, 250)
@@ -70,6 +70,7 @@ class TopicController(QWidget):
         grid.setSpacing(20)
         index = 0
         for topic, articles in self.data.items():
+            topic = topic.capitalize()
             on_click = lambda _, t=topic, a=articles: self.load_topic(t, a)
             btn = create_btn(topic, on_click)
             grid.addWidget(btn, index // 2, index % 2)

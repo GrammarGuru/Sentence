@@ -1,5 +1,4 @@
-*.DS_Store
-.idea/
-config/auth.json
-*__pycache__
+*__pycache__/
+*.idea/
 build/
+config/auth.json

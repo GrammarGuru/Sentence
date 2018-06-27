@@ -1,7 +1,5 @@
-import sys
 from .worksheet import Worksheet
-sys.path.append("..")
-from server.newscrawler import crawl
+from src.api.news import crawl
 from src.components.controller import Controller
 from src.components.lines import Lines
 from src.components.color_manager import ColorManager
