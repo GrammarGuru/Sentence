@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QWidget, QHBoxLayout, \
     QVBoxLayout, QLabel, QPushButton, \
     QApplication, QColorDialog, QMessageBox
 from PyQt5.QtGui import QFont
-from .widget_utils import fill_layout, set_btn_font
+from .widget_utils import fill_layout, style_btn, style_label, set_color
 
 sheet = """
         color: rgb(66, 184, 221);
@@ -83,7 +83,7 @@ class ColorManager(QWidget):
     def _create_btn(self, id):
         btn = QPushButton('Edit')
         btn.setStyleSheet(sheet)
-        set_btn_font(btn, 13)
+        style_btn(btn, 13)
         btn.setMinimumSize(80, 40)
         btn.clicked.connect(lambda _, pos_id=id: self.update(pos_id))
         return btn
@@ -91,24 +91,13 @@ class ColorManager(QWidget):
     def _create_label(self, name, color):
         label = QLabel(name)
         self.labels[name] = label
-        set_color(label, color)
-        label.setFont(QFont('Times New Roman', 13))
+        style_label(label, font_size=13, color=color)
         return label
-
-
-def set_color(label, color):
-    label.setStyleSheet("""
-                        color: {}
-                        """.format(format_rgb(color)))
 
 
 def load_styles(loc):
     with open(loc) as f:
         return json.load(f)
-
-
-def format_rgb(rgb):
-    return 'rgb({},{},{})'.format(*rgb)
 
 
 def parse_rgb(rgb):

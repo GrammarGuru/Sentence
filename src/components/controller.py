@@ -1,5 +1,6 @@
 import sys
 from src.components.news_controller.topic_controller import TopicController
+from src.components.sentence_writer import SentenceWriter
 from PyQt5.QtWidgets import QWidget, \
     QPushButton, \
     QHBoxLayout, QApplication
@@ -37,16 +38,24 @@ class Controller(QWidget):
         self.layout = self.init_layout()
         self.setStyleSheet(background_sheet)
         self.topic_controller = TopicController(data, link_func, lines_func)
+        self.writer = SentenceWriter()
 
+        write_btn = create_btn('Write', self.init_writer)
         news_btn = create_btn('News', self.show_news)
         generate_btn = create_btn('Generate', generate_func)
 
-        fill_layout(self.layout, news_btn, generate_btn)
+        fill_layout(self.layout, write_btn, news_btn, generate_btn)
         
     def init_layout(self):
         layout = QHBoxLayout(self)
         layout.addStretch(1)
         return layout
+
+    def init_writer(self):
+        try:
+            self.writer.show()
+        except Exception as inst:
+            print(inst)
 
     def show_news(self):
         self.topic_controller.show()

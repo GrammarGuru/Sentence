@@ -7,7 +7,7 @@ from src.api.nlp import parse_all
 
 import json
 
-PUNCT = {',', '.', '-', "'", '?', "n't"}
+PUNCT = {',', '.', '-', "'s", '?', "n't"}
 
 
 def rindex(lst, val):

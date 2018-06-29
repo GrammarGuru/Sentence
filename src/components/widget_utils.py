@@ -10,6 +10,26 @@ def fill_layout(layout, *args):
             layout.addWidget(item)
 
 
-def set_btn_font(btn, font_size, style='Times New Roman'):
+def style_btn(btn, font_size, style='Times New Roman'):
     font = QFont(style, font_size)
     btn.setFont(font)
+    return btn
+
+
+def style_label(label, font_size, color, style='Times New Roman'):
+    font = QFont(style, font_size)
+    label.setFont(font)
+    set_color(label, color)
+    return label
+
+
+def set_color(label, color):
+    label.setStyleSheet("""
+                        color: {}
+                        """.format(format_rgb(color)))
+    return label
+
+
+def format_rgb(rgb):
+    return 'rgb({},{},{})'.format(*rgb)
+

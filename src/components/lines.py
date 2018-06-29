@@ -29,6 +29,7 @@ box_sheet = """
             background-color: white;
             """
 
+
 class Lines(QWidget):
     def __init__(self):
         super().__init__()
@@ -59,45 +60,19 @@ class Lines(QWidget):
     def get_layout(self):
         container = QWidget()
         container.setLayout(self.layout)
-        scroll = self.create_scroll_area(container)
+        scroll = create_scroll_area(container)
         
         layout = QVBoxLayout(self)
         self.setLayout(layout)
         layout.addWidget(scroll)
         return layout
-        
-    
-    @staticmethod
-    def create_scroll_area(container):
-        scroll = QScrollArea()
-        scroll.setWidgetResizable(False)
-        scroll.setWidget(container)
-        return scroll
-        
-    @staticmethod
-    def create_text_box():
-        box = QTextEdit()
-        box.setStyleSheet(box_sheet)
-        box.setMaximumHeight(100)
-        box.setMinimumWidth(420)
-        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        box.setSizePolicy(sizePolicy)
-        return box
-    
-    @staticmethod
-    def create_remove_btn():
-        btn = QPushButton('X')
-        btn.setStyleSheet(add_sheet)
-        btn.setMaximumSize(40, 40)
-        btn.setMinimumSize(35, 35)
-        return btn
     
     def add_line(self):
         hbox = QHBoxLayout()
         
-        box = self.create_text_box()
+        box = create_text_box()
         self.lines.append(box)
-        btn = self.create_remove_btn()
+        btn = create_remove_btn()
         btn.clicked.connect(lambda x: self.remove_line(hbox, box, btn))
         
         index = self.size
@@ -129,6 +104,30 @@ class Lines(QWidget):
                 result.append(text)
         return result
 
+
+def create_scroll_area(container):
+    scroll = QScrollArea()
+    scroll.setWidgetResizable(False)
+    scroll.setWidget(container)
+    return scroll
+
+
+def create_text_box():
+    box = QTextEdit()
+    box.setStyleSheet(box_sheet)
+    box.setMaximumHeight(100)
+    box.setMinimumWidth(420)
+    sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+    box.setSizePolicy(sizePolicy)
+    return box
+
+
+def create_remove_btn():
+    btn = QPushButton('X')
+    btn.setStyleSheet(add_sheet)
+    btn.setMaximumSize(40, 40)
+    btn.setMinimumSize(35, 35)
+    return btn
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
