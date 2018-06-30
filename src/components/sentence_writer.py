@@ -32,6 +32,9 @@ class SentenceWriter(QWidget):
         label.setPixmap(pixmap)
         return label
 
+    def closeEvent(self, event):
+        print(event)
+
 
 def get_instruction(sentence_format):
     colors = get_colors()
@@ -54,6 +57,7 @@ def get_colors():
 
 
 if __name__ == '__main__':
+    STYLE_LOC = '../../config/style.json'
     app = QApplication(sys.argv)
     ex = SentenceWriter(URL, SENTENCE_FORMAT)
     ex.show()

@@ -3,7 +3,6 @@ import json
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, \
     QVBoxLayout, QLabel, QPushButton, \
     QApplication, QColorDialog, QMessageBox
-from PyQt5.QtGui import QFont
 from .widget_utils import fill_layout, style_btn, style_label, set_color
 
 sheet = """
@@ -61,9 +60,10 @@ class ColorManager(QWidget):
     def closeEvent(self, event):
         print("Close Event")
         if self.change:
-            reply = QMessageBox.question(self, 'Save changes', "Would you like to save changes?", QMessageBox.Yes,
+            reply = QMessageBox.question(self, 'Save changes',
+                                         "Would you like to save changes?",
+                                         QMessageBox.Yes,
                                          QMessageBox.No)
-
             if reply == QMessageBox.Yes:
                 self.save_state()
             else:

@@ -4,22 +4,9 @@ from docx.shared import Pt, Inches
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT, WD_LINE_SPACING
 from src.pos import POS
 from src.api.nlp import parse_all
-
 import json
 
 PUNCT = {',', '.', '-', "'s", '?', "n't"}
-
-
-def rindex(lst, val):
-    return len(lst) - 1 - lst[::-1].index(val)
-
-
-def load_color(rgb):
-    return RGBColor(*rgb)
-
-
-with open('config/style.json') as f:
-    styles = [load_color(style['rgb']) for style in json.load(f).values()]
 
 
 class Worksheet:
@@ -136,6 +123,18 @@ class Worksheet:
         run.bold = bold
         run.font.name = self.font
         run.font.size = Pt(font_size)
+
+
+def rindex(lst, val):
+    return len(lst) - 1 - lst[::-1].index(val)
+
+
+def load_color(rgb):
+    return RGBColor(*rgb)
+
+
+with open('config/style.json') as f:
+    styles = [load_color(style['rgb']) for style in json.load(f).values()]
 
 
 if __name__ == '__main__':

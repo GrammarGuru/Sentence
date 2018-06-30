@@ -12,7 +12,7 @@ sheet = """
         text-shadow 0 1px 1px rgba(0, 0, 0, 0.2);
         background-color: rgb(255, 255, 255);
         """
-        
+
 add_sheet = """
             color: rgb(232, 93, 117);
             border-radius: 5px;
@@ -20,11 +20,11 @@ add_sheet = """
             text-shadow 0 1px 1px rgba(0, 0, 0, 0.2);
             background-color: rgb(255, 255, 255);
             """
-            
+
 background_sheet = """
                     background-color: rgb(250, 250, 250)
                    """
-                    
+
 box_sheet = """
             background-color: white;
             """
@@ -37,15 +37,15 @@ class Lines(QWidget):
         self.setStyleSheet(background_sheet)
         self.layout = QVBoxLayout()
         self.lines = []
-        
+
         for i in range(10):
             self.add_line()
-        
+
         layout = self.get_layout()
 
         add_btn = self.create_add_btn()
         layout.addWidget(add_btn)
-        
+
     def create_add_btn(self):
         btn = QPushButton('Add')
         btn.setStyleSheet(sheet)
@@ -56,25 +56,25 @@ class Lines(QWidget):
         btn.resize(btn.minimumSize())
         btn.clicked.connect(self.add_line)
         return btn
-        
+
     def get_layout(self):
         container = QWidget()
         container.setLayout(self.layout)
         scroll = create_scroll_area(container)
-        
+
         layout = QVBoxLayout(self)
         self.setLayout(layout)
         layout.addWidget(scroll)
         return layout
-    
+
     def add_line(self):
         hbox = QHBoxLayout()
-        
+
         box = create_text_box()
         self.lines.append(box)
         btn = create_remove_btn()
         btn.clicked.connect(lambda x: self.remove_line(hbox, box, btn))
-        
+
         index = self.size
         fill_layout(hbox, box, btn)
         self.layout.insertLayout(index, hbox)
@@ -128,6 +128,7 @@ def create_remove_btn():
     btn.setMaximumSize(40, 40)
     btn.setMinimumSize(35, 35)
     return btn
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

@@ -11,7 +11,10 @@ pos_map = {
     'DO': POS.DirectObject,
     'IO': POS.IndirectObject,
     'PN': POS.PredicateNominative,
-    'PA': POS.PredicateAdjective
+    'PA': POS.PredicateAdjective,
+    'APPOS': POS.Appositive,
+    'PARTICIPLE': POS.Participle,
+    'INF': POS.Infinitive
 }
 
 

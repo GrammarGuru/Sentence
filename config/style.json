@@ -28,5 +28,20 @@
     "id": 5,
     "name": "Predicate Adjective",
     "rgb": [143, 57, 133]
+  },
+  "Appositive": {
+    "id": 6,
+    "name": "Appositive Phrase",
+    "rgb": [0, 0, 0]
+  },
+  "Participle": {
+    "id": 7,
+    "name": "Participle Phrase",
+    "rgb": [0, 0, 0]
+  },
+  "Infinitive": {
+    "id": 8,
+    "name": "Infinitive Phrase",
+    "rgb": [0, 0, 0]
   }
 }
