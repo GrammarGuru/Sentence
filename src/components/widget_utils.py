@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QLayout
 from PyQt5.QtGui import QFont
+import json
 
 
 def fill_layout(layout, *args):
@@ -16,7 +17,7 @@ def style_btn(btn, font_size, style='Times New Roman'):
     return btn
 
 
-def style_label(label, font_size, color, style='Times New Roman'):
+def style_label(label, font_size, color=(0, 0, 0), style='Times New Roman'):
     font = QFont(style, font_size)
     label.setFont(font)
     set_color(label, color)
@@ -32,4 +33,9 @@ def set_color(label, color):
 
 def format_rgb(rgb):
     return 'rgb({},{},{})'.format(*rgb)
+
+
+def load_json(loc):
+    with open(loc) as f:
+        return json.load(f)
 

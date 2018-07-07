@@ -6,7 +6,7 @@ from src.pos import POS
 from src.api.nlp import parse_all
 import json
 
-PUNCT = {',', '.', '-', "'s", '?', "n't"}
+PUNCT = {',', '.', '-', "'s", "'m", '?', "n't"}
 
 
 class Worksheet:
@@ -21,6 +21,7 @@ class Worksheet:
             self.loc = loc
             self.title = title
         self.font = 'Times New Roman'
+        self.styles = load_json('config/pos.json')
         self.lines = parse_all(lines)
         self.doc = Document()
 
@@ -43,29 +44,21 @@ class Worksheet:
         font.bold = True
 
     def add_instructions(self):
-        if self.key:
-            self.add_instruction_with_colors('Label: ', ['Subject', 
-                                             'Verb', 
-                                             'DO',
-                                             'IO',
-                                             'PN',
-                                             'PA',
-                                             '(prepositional phrase)'], styles + [None])
-        else:
-            self.add_instruction('Label: ', 'Subject, Verb, PN, PA, DO, IO, (prepositional phrase)')
+        self.add_instruction_with_colors()
         self.add_instruction('Insert ', 'any needed commas, and circle them')
         
-    def add_instruction_with_colors(self, subtitle, labels, colors):
+    def add_instruction_with_colors(self):
         line = self.doc.add_paragraph()
-        subtitle = line.add_run(subtitle)
+        subtitle = line.add_run('Label: ')
         self.format_run(subtitle, font_size=self.font_size, bold=True)
         comma = False
-        for label, color in zip(labels, colors):
-            if comma:
-                self.format_run(line.add_run(", "), font_size=self.font_size)
-            else:
-                comma = True
-            self.format_run(line.add_run(label), font_size=self.font_size, color=color)
+        for style in self.styles.values():
+            if style['active']:
+                if comma:
+                    self.format_run(line.add_run(", "), font_size=self.font_size)
+                else:
+                    comma = True
+                self.format_run(line.add_run(style['name']), font_size=self.font_size, color=load_color(style['rgb']))
 
     def add_instruction(self, subtitle, instruction):
         line = self.doc.add_paragraph()
@@ -86,7 +79,7 @@ class Worksheet:
             if run is not None and word not in PUNCT:
                 run = paragraph.add_run(' ')
                 self.format_run(run)
-            if type(color) == int:
+            if type(color) == int and self.styles['Preposition']['active']:
                 if index == current_prep:
                     run = paragraph.add_run(word + ')')
                 elif index > current_prep:
@@ -117,7 +110,9 @@ class Worksheet:
 
     def format_run(self, run, color=None, font_size=13, bold=False):
         if type(color) == POS:
-            run.font.color.rgb = styles[color.value]
+            key = list(self.styles.keys())[color.value]
+            if self.styles[key]['active']:
+                run.font.color.rgb = load_color(self.styles[key]['rgb'])
         elif type(color) == RGBColor:
             run.font.color.rgb = color
         run.bold = bold
@@ -133,8 +128,9 @@ def load_color(rgb):
     return RGBColor(*rgb)
 
 
-with open('config/style.json') as f:
-    styles = [load_color(style['rgb']) for style in json.load(f).values()]
+def load_json(loc):
+    with open(loc) as f:
+        return json.load(f)
 
 
 if __name__ == '__main__':

@@ -1,9 +1,11 @@
+import os
 from .worksheet import Worksheet
-from src.api.news import crawl
+from src.api.news import crawl, break_paragraphs
 from src.components.controller import Controller
 from src.components.lines import Lines
-from src.components.color_manager import ColorManager
-from src.components.widget_utils import fill_layout
+from src.components.settings.pos_manager import PosManager
+from src.components.settings.sheet_manager import SheetManager
+from src.components.widget_utils import fill_layout, load_json
 from PyQt5.QtWidgets import QMainWindow, \
     QToolTip, \
     QDesktopWidget, QHBoxLayout, \
@@ -16,10 +18,6 @@ background_sheet = """
                    """
 
 
-def get_title(loc):
-    return loc[loc.rindex('/') + 1:loc.index('.')]
-
-
 class Model(QMainWindow):
     def __init__(self, data, width=1200, height=800):
         super().__init__()
@@ -27,33 +25,37 @@ class Model(QMainWindow):
         self.setStyleSheet(background_sheet)
         self.width = width
         self.height = height
+        self.settings = load_json('config/worksheet.json')
         self.initUI()
         self.format_window()
-        
-    def load_color_manager(self):
-        color_manager = ColorManager()
-        change_color = QAction('Edit Colors', self)
-        change_color.triggered.connect(lambda _: color_manager.show())
-        return change_color
-        
+
+    def config_manager(self, manager, title):
+        setting = QAction(title, self)
+        setting.triggered.connect(lambda _: manager.show())
+        return setting
+
     def add_toolbar(self):
         menu_bar = self.menuBar()
-        color_action = self.load_color_manager()
+
+        color_action = self.config_manager(PosManager(), 'Edit POS')
+        sheet_action = self.config_manager(SheetManager(), 'Worksheet Settings')
+
         format_menu = menu_bar.addMenu('Format')
         format_menu.addAction(color_action)
-        
+        format_menu.addAction(sheet_action)
+
     def set_layout(self):
         self.setCentralWidget(QWidget(self))
         self.layout = QHBoxLayout()
         self.centralWidget().setLayout(self.layout)
-        
+
     def load_components(self):
         self.lines = Lines()
         self.controller = Controller(data=self.data,
                                      generate_func=self.generate,
-                                     link_func=self.add_link, 
+                                     link_func=self.add_link,
                                      lines_func=self.add_lines)
-        
+
     def format_window(self):
         self.resize(self.width, self.height)
         self.setWindowTitle('Sentence')
@@ -67,7 +69,7 @@ class Model(QMainWindow):
         self.load_components()
         self.set_layout()
         self.add_toolbar()
-        
+
         vbox = QVBoxLayout()
         vbox.addStretch(2)
         vbox.addWidget(self.controller)
@@ -75,9 +77,12 @@ class Model(QMainWindow):
 
     def add_link(self, link):
         self.lines.fill(crawl(link))
-        
+
     def add_lines(self, lines):
-        self.lines.fill(lines)
+        if self.settings['Paragraph Mode']:
+            self.lines.fill(lines)
+        else:
+            self.lines.fill(break_paragraphs(lines))
 
     def show_dialog(self, message):
         msg = QMessageBox(self)
@@ -90,7 +95,8 @@ class Model(QMainWindow):
     def get_filename(self):
         try:
             return QFileDialog.getSaveFileName(self, 'Save Worksheet',
-                                           'C:\\', 'Microsoft Word Document (*.docx)')[0]
+                                               os.path.expanduser('~\\Documents'),
+                                               'Microsoft Word Document (*.docx)')[0]
         except:
             self.show_dialog("Error: Invalid File Name")
 
@@ -116,3 +122,7 @@ class Model(QMainWindow):
         cp = QDesktopWidget().availableGeometry().center()
         qr.moveCenter(cp)
         self.move(qr.topLeft())
+
+
+def get_title(loc):
+    return loc[loc.rindex('/') + 1:loc.index('.')]

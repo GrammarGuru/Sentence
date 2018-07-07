@@ -2,8 +2,7 @@ import sys
 from PyQt5.QtWidgets import QWidget, \
     QTextEdit, QPushButton, QVBoxLayout, \
     QHBoxLayout, QApplication, QScrollArea, QSizePolicy
-from PyQt5.QtGui import QFont
-from .widget_utils import fill_layout
+from .widget_utils import fill_layout, style_btn
 
 sheet = """
         color: rgb(66, 184, 221);
@@ -43,18 +42,17 @@ class Lines(QWidget):
 
         layout = self.get_layout()
 
-        add_btn = self.create_add_btn()
-        layout.addWidget(add_btn)
+        add_btn = self.create_btn('Add', self.add_line)
+        clear_btn = self.create_btn('Reset', self.reset)
+        fill_layout(layout, add_btn, clear_btn)
 
-    def create_add_btn(self):
-        btn = QPushButton('Add')
+    def create_btn(self, title, on_click):
+        btn = QPushButton(title)
         btn.setStyleSheet(sheet)
-        font = QFont()
-        font.setPointSize(14)
-        btn.setFont(font)
+        style_btn(btn, font_size=14)
         btn.setMinimumHeight(40)
         btn.resize(btn.minimumSize())
-        btn.clicked.connect(self.add_line)
+        btn.clicked.connect(on_click)
         return btn
 
     def get_layout(self):
@@ -79,6 +77,10 @@ class Lines(QWidget):
         fill_layout(hbox, box, btn)
         self.layout.insertLayout(index, hbox)
         self.size += 1
+
+    def reset(self):
+        for line in self.lines:
+            line.setText('')
 
     def fill(self, lines):
         index = 0
