@@ -81,6 +81,7 @@ class TopicController(QWidget):
     def send_link(self, link):
         try:
             self.link_func(link)
+            self.close()
         except Exception as inst:
             print(inst)
             msg = QMessageBox()

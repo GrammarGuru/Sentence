@@ -9,9 +9,10 @@ background_sheet = """
 
 
 class Manager(QWidget):
-    def __init__(self, loc, title='Manager'):
+    def __init__(self, loc, title='Manager', update_func=None):
         super().__init__()
         self.loc = loc
+        self.update_func = update_func
         self.setStyleSheet(background_sheet)
         self.settings = load(loc)
         self.initSettings = copy.deepcopy(self.settings)
@@ -33,6 +34,8 @@ class Manager(QWidget):
     def save_state(self):
         with open(self.loc, 'w') as f:
             f.write(json.dumps(self.settings))
+        if self.update_func is not None:
+            self.update_func()
 
     def reset(self):
         self.settings = self.initSettings

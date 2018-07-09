@@ -10,7 +10,7 @@ PUNCT = {',', '.', '-', "'s", "'m", '?', "n't"}
 
 
 class Worksheet:
-    def __init__(self, lines=[], title='Sentence Worksheet', loc='Worksheet.docx', key=False, font_size=13):
+    def __init__(self, lines=[], title='Sentence Worksheet', loc='Worksheet.docx', sources=[], key=False, font_size=13):
         self.key = key
         self.font_size = font_size
         if key:
@@ -23,11 +23,14 @@ class Worksheet:
         self.font = 'Times New Roman'
         self.styles = load_json('config/pos.json')
         self.lines = parse_all(lines)
+        self.sources = sources
         self.doc = Document()
 
     def render(self):
         self.doc = Document()
         self.add_title(self.title)
+        if len(self.sources) > 0:
+            self.add_sources()
         self.add_instructions()
         self.add_title('')
         for line in self.lines:
@@ -42,6 +45,11 @@ class Worksheet:
         font.name = self.font
         font.size = Pt(16)
         font.bold = True
+
+    def add_sources(self):
+        p = self.doc.add_paragraph()
+        self.format_run(p.add_run('Sources: '), font_size=8, bold=True)
+        self.format_run(p.add_run(', '.join(self.sources)), font_size=8, bold=False)
 
     def add_instructions(self):
         self.add_instruction_with_colors()
@@ -118,6 +126,7 @@ class Worksheet:
         run.bold = bold
         run.font.name = self.font
         run.font.size = Pt(font_size)
+        return run
 
 
 def rindex(lst, val):

@@ -9,8 +9,8 @@ background_sheet = """
 
 
 class SheetManager(Manager):
-    def __init__(self, loc='config/worksheet.json', title='Worksheet Settings'):
-        super().__init__(loc, title)
+    def __init__(self, loc='config/worksheet.json', title='Worksheet Settings', update_func=None):
+        super().__init__(loc, title, update_func)
         settings = [self.create_setting(name, active) for name, active in self.settings.items()]
         fill_layout(self.layout, *settings)
 

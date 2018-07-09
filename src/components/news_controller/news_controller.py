@@ -50,33 +50,21 @@ class NewsController(QWidget):
         title = create_label('Category: {}'.format(topic))
         for index, article in enumerate(self.articles):
             label = LinkLabel(article['title'].strip(), article['url'], font_size=12)
-            callback = lambda _, lines=article['lines']: self.send_lines(lines)
+            callback = lambda _, lines=article['lines'], link=article['url']: self.send_lines(lines, link)
             btn = create_btn(callback)
             grid.addWidget(label, index + 1, 0)
             grid.addWidget(btn, index + 1, 1)
 
         fill_layout(self.layout, title, grid)
 
-    def send_lines(self, lines):
+    def send_lines(self, lines, link):
         try:
-            self.lines_func(lines)
+            self.lines_func(lines, link)
             self.close()
         except Exception as inst:
             print(inst)
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Information)
             msg.setText('Error: Try Again')
-            msg.setStandardButtons(QMessageBox.Ok)
-            msg.show()
-
-    def send_link(self, _, link):
-        try:
-            self.link_func(link)
-            self.close()
-        except Exception as inst:
-            print(inst)
-            msg = QMessageBox()
-            msg.setIcon(QMessageBox.Information)
-            msg.setText('Error: Check Link and Try Again')
             msg.setStandardButtons(QMessageBox.Ok)
             msg.show()

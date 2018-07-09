@@ -22,10 +22,11 @@ class Model(QMainWindow):
     def __init__(self, data, width=1200, height=800):
         super().__init__()
         self.data = data
+        self.sources = []
         self.setStyleSheet(background_sheet)
         self.width = width
         self.height = height
-        self.settings = load_json('config/worksheet.json')
+        self.load_settings()
         self.initUI()
         self.format_window()
 
@@ -38,7 +39,7 @@ class Model(QMainWindow):
         menu_bar = self.menuBar()
 
         color_action = self.config_manager(PosManager(), 'Edit POS')
-        sheet_action = self.config_manager(SheetManager(), 'Worksheet Settings')
+        sheet_action = self.config_manager(SheetManager(update_func=self.load_settings), 'Worksheet Settings')
 
         format_menu = menu_bar.addMenu('Format')
         format_menu.addAction(color_action)
@@ -50,11 +51,14 @@ class Model(QMainWindow):
         self.centralWidget().setLayout(self.layout)
 
     def load_components(self):
-        self.lines = Lines()
+        self.lines = Lines(reset_func=self.reset)
         self.controller = Controller(data=self.data,
                                      generate_func=self.generate,
                                      link_func=self.add_link,
                                      lines_func=self.add_lines)
+
+    def load_settings(self):
+        self.settings = load_json('config/worksheet.json')
 
     def format_window(self):
         self.resize(self.width, self.height)
@@ -76,9 +80,13 @@ class Model(QMainWindow):
         fill_layout(self.layout, self.lines, vbox)
 
     def add_link(self, link):
-        self.lines.fill(crawl(link))
+        self.add_lines(crawl(link), link)
 
-    def add_lines(self, lines):
+    def reset(self):
+        self.sources = []
+
+    def add_lines(self, lines, link):
+        self.sources.append(link)
         if self.settings['Paragraph Mode']:
             self.lines.fill(lines)
         else:
@@ -109,8 +117,8 @@ class Model(QMainWindow):
         lines = self.lines.get_data()
         questions = [line.replace(",", "") for line in lines]
         try:
-            Worksheet(questions, title=title, loc=file_loc, key=False).render()
-            Worksheet(lines, title=title, loc=file_loc, key=True).render()
+            Worksheet(questions, title=title, loc=file_loc, sources=self.sources, key=False).render()
+            Worksheet(lines, title=title, loc=file_loc, sources=self.sources, key=True).render()
             self.show_dialog("Worksheet has been created.")
         except Exception as inst:
             print(inst)

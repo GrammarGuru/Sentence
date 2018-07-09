@@ -30,9 +30,10 @@ box_sheet = """
 
 
 class Lines(QWidget):
-    def __init__(self):
+    def __init__(self, reset_func=None):
         super().__init__()
         self.size = 0
+        self.reset_func = reset_func
         self.setStyleSheet(background_sheet)
         self.layout = QVBoxLayout()
         self.lines = []
@@ -81,6 +82,8 @@ class Lines(QWidget):
     def reset(self):
         for line in self.lines:
             line.setText('')
+        if self.reset_func is not None:
+            self.reset_func()
 
     def fill(self, lines):
         index = 0
