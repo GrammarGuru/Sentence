@@ -63,7 +63,7 @@ class Model(QMainWindow):
     def format_window(self):
         self.resize(self.width, self.height)
         self.setWindowTitle('Sentence')
-        self.setWindowIcon(QIcon('doc_icon.ico'))
+        self.setWindowIcon(QIcon('assets/doc_icon.ico'))
         self.center()
 
     def initUI(self):
@@ -86,7 +86,8 @@ class Model(QMainWindow):
         self.sources = []
 
     def add_lines(self, lines, link):
-        self.sources.append(link)
+        if self.settings['Include Sources']:
+            self.sources.append(link)
         if self.settings['Paragraph Mode']:
             self.lines.fill(lines)
         else:
@@ -101,24 +102,25 @@ class Model(QMainWindow):
 
     @property
     def get_filename(self):
-        try:
-            return QFileDialog.getSaveFileName(self, 'Save Worksheet',
-                                               os.path.expanduser('~\\Documents'),
-                                               'Microsoft Word Document (*.docx)')[0]
-        except:
-            self.show_dialog("Error: Invalid File Name")
+        return QFileDialog.getSaveFileName(self, 'Save Worksheet',
+                                           os.path.expanduser('~\\Documents'),
+                                           'Microsoft Word Document (*.docx)')[0]
 
     def generate(self):
+        self.statusBar().showMessage('Generating documents')
         file_loc = self.get_filename
-        if file_loc is None:
+        if len(file_loc) == 0:
             return
         title = get_title(file_loc)
-        self.statusBar().showMessage('Generating documents')
+        sources = self.sources if self.settings['Include Sources'] else []
         lines = self.lines.get_data()
-        questions = [line.replace(",", "") for line in lines]
+        if len(lines) == 0:
+            self.show_dialog("Error: Make sure to add some sentences.")
+            return
+        questions = [line.replace(",", "") for line in lines] if self.settings['Remove Commas'] else lines
         try:
-            Worksheet(questions, title=title, loc=file_loc, sources=self.sources, key=False).render()
-            Worksheet(lines, title=title, loc=file_loc, sources=self.sources, key=True).render()
+            Worksheet(questions, title=title, loc=file_loc, sources=sources, key=False).render()
+            Worksheet(lines, title=title, loc=file_loc, sources=sources, key=True).render()
             self.show_dialog("Worksheet has been created.")
         except Exception as inst:
             print(inst)

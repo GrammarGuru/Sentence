@@ -31,35 +31,36 @@ class PosManager(Manager):
         name = style['name']
         active = style['active']
 
-        label = self._create_label(name, color)
+        self.labels[pos] = self._create_label(name, color)
         btn = self._create_btn(pos)
         checkbox = QCheckBox("Activate")
         checkbox.setChecked(active)
         checkbox.stateChanged.connect(lambda _, p=pos: self.update_status(p))
 
-        fill_layout(layout, label, btn, checkbox)
+        fill_layout(layout, self.labels[pos], btn, checkbox)
         return layout
 
     def update_color(self, pos):
-        color = parse_rgb(QColorDialog.getColor().rgb())
-        if color != [0, 0, 0]:
-            self.settings[pos]['rgb'] = color
-            set_color(self.labels[pos], color)
+        color = QColorDialog.getColor()
+        if color.isValid():
+            rgb = parse_rgb(color.rgb())
+            self.settings[pos]['rgb'] = rgb
+            set_color(self.labels[pos], rgb)
 
     def update_status(self, pos):
         self.settings[pos]['active'] = not self.settings[pos]['active']
 
     def _create_btn(self, id):
-        btn = QPushButton('Edit')
+        btn = QPushButton('Edit Color')
         btn.setStyleSheet(sheet)
         style_btn(btn, 13)
         btn.setMinimumSize(80, 40)
         btn.clicked.connect(lambda _, pos_id=id: self.update_color(pos_id))
         return btn
 
-    def _create_label(self, name, color):
+    @staticmethod
+    def _create_label(name, color):
         label = QLabel(name)
-        self.labels[name] = label
         style_label(label, font_size=13, color=color)
         return label
 

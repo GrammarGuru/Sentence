@@ -9,6 +9,7 @@ class POS(Enum):
     IndirectObject = 3  # Orange
     PredicateNominative = 4  # Pink
     PredicateAdjective = 5   # Purple
-    Appositive = 6
-    Participle = 7
-    Infinitive = 8
+    PrepositionalPhrase = 6
+    Appositive = 7
+    Participle = 8
+    Infinitive = 9

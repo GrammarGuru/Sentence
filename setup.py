@@ -6,7 +6,7 @@ packages = [
 ]
 files = [
     'config',
-    'images'
+    'assets'
 ]
 excludes = ["tkinter"]
 modules = []
@@ -27,4 +27,4 @@ setup(name="Sentence",
       version="0.1",
       description="Sentence Worksheet Maker",
       options={"build_exe": build_exe_options},
-      executables=[Executable("main.py", base=base, icon='doc_icon.ico')])
+      executables=[Executable("main.py", base=base, icon='assets/doc_icon.ico')])

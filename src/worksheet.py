@@ -121,6 +121,8 @@ class Worksheet:
             key = list(self.styles.keys())[color.value]
             if self.styles[key]['active']:
                 run.font.color.rgb = load_color(self.styles[key]['rgb'])
+        elif type(color) == int and self.styles['Preposition']['active']:  # Check if preposition needs coloring
+            run.font.color.rgb = load_color(self.styles['Preposition']['rgb'])
         elif type(color) == RGBColor:
             run.font.color.rgb = color
         run.bold = bold
