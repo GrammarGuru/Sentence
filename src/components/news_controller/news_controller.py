@@ -1,5 +1,5 @@
 from src.components.link_label import LinkLabel
-from src.components.widget_utils import fill_layout
+from src.widget_utils import fill_layout
 from PyQt5.QtWidgets import QWidget, \
     QPushButton, \
     QVBoxLayout, QLabel, \

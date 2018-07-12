@@ -1,20 +1,18 @@
 import requests
 import json
-from nltk import sent_tokenize
+from .nlp import get_sentences
 
 with open('config/api.json') as f:
     URL = json.load(f)['functions']
 
 
 def get_data():
-    content = requests.get(URL + 'getNews').json()
-    return content
+    return requests.post(URL + 'getNews', {'file': 'data.json'}).json()
 
 
 def crawl(url):
-    content = requests.post(URL + 'scrape', data={'url': url}).content
-    return json.loads(content)
+    return requests.post(URL + 'scrape', data={'url': url}).json()
 
 
 def break_paragraphs(paragraphs):
-    return [line for p in paragraphs for line in sent_tokenize(p)]
+    return [line for p in paragraphs for line in get_sentences(p)]

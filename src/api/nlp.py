@@ -1,5 +1,6 @@
 import requests
 import json
+from nltk import sent_tokenize
 from ..pos import POS
 
 with open('config/api.json') as f:
@@ -16,6 +17,10 @@ pos_map = {
     'PARTICIPLE': POS.Participle,
     'INF': POS.Infinitive
 }
+
+
+def get_sentences(text):
+    return sent_tokenize(text)
 
 
 def read_pos(tag):
@@ -36,3 +41,7 @@ def parse_all(lines):
 def parse(line):
     data = json.loads(requests.post(URL + 'parseLine', {'line': line}).text)
     return {'doc': data['words'], 'pos': parse_pos(data['pos'])}
+
+
+def filter_lines(lines):
+    return requests.post(URL + 'filter', {'lines': lines}).json()

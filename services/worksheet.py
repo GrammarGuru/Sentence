@@ -9,6 +9,21 @@ import json
 PUNCT = {',', '.', '-', "'s", "'m", '?', "n't"}
 
 
+def create_worksheet(file_loc, title, lines, sources, settings):
+    """
+    :param file_loc: Location of document
+    :param title: Title of worksheet
+    :param lines: Array of sentences
+    :param sources: Array of urls where lines were pulled from
+    :param settings: Settings
+    """
+    questions = [line.replace(",", "") for line in lines] if settings['Remove Commas'] else lines
+    sources = sources if settings['Include Sources'] else []
+
+    Worksheet(questions, title=title, loc=file_loc, sources=sources, key=False).render()
+    Worksheet(lines, title=title, loc=file_loc, sources=sources, key=True).render()
+
+
 class Worksheet:
     def __init__(self, lines=[], title='Sentence Worksheet', loc='Worksheet.docx', sources=[], key=False, font_size=13):
         self.key = key
@@ -103,11 +118,12 @@ class Worksheet:
             paragraph.add_run('.')
 
     def format_document(self):
+        margin = Inches(0.5)
         for section in self.doc.sections:
-            section.left_margin = Inches(0.5)
-            section.right_margin = Inches(0.5)
-            section.top_margin = Inches(0.5)
-            section.bottom_margin = Inches(0.5)
+            section.left_margin = margin
+            section.right_margin = margin
+            section.top_margin = margin
+            section.bottom_margin = margin
 
     def format_paragraph(self, p):
         p.style.font.bold = False

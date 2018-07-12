@@ -1,16 +1,8 @@
 from PyQt5.QtWidgets import QHBoxLayout, \
     QLabel, QPushButton, \
     QColorDialog, QCheckBox
-from ..widget_utils import fill_layout, style_btn, style_label, set_color
+from src.widget_utils import fill_layout, style_btn, style_label, set_color
 from .manager import Manager
-
-sheet = """
-        color: rgb(66, 184, 221);
-        border-radius: 5px;
-        border: 2px solid rgb(66, 184, 221);
-        text-shadow 0 1px 1px rgba(0, 0, 0, 0.2);
-        background-color: rgb(255, 255, 255);
-        """
 
 
 class PosManager(Manager):
@@ -52,7 +44,6 @@ class PosManager(Manager):
 
     def _create_btn(self, id):
         btn = QPushButton('Edit Color')
-        btn.setStyleSheet(sheet)
         style_btn(btn, 13)
         btn.setMinimumSize(80, 40)
         btn.clicked.connect(lambda _, pos_id=id: self.update_color(pos_id))

@@ -1,15 +1,16 @@
 import os
-from .worksheet import Worksheet
+from services.worksheet import create_worksheet
 from src.api.news import crawl, break_paragraphs
+from src.api.nlp import filter_lines
 from src.components.controller import Controller
 from src.components.lines import Lines
 from src.components.settings.pos_manager import PosManager
 from src.components.settings.sheet_manager import SheetManager
-from src.components.widget_utils import fill_layout, load_json
+from src.widget_utils import fill_layout, load_json, show_dialog
 from PyQt5.QtWidgets import QMainWindow, \
     QToolTip, \
     QDesktopWidget, QHBoxLayout, \
-    QMessageBox, QWidget, QVBoxLayout, \
+    QWidget, QVBoxLayout, \
     QFileDialog, QAction
 from PyQt5.QtGui import QFont, QIcon
 
@@ -85,20 +86,13 @@ class Model(QMainWindow):
     def reset(self):
         self.sources = []
 
-    def add_lines(self, lines, link):
-        if self.settings['Include Sources']:
+    def add_lines(self, lines, link=None):
+        if link is not None and self.settings['Include Sources']:
             self.sources.append(link)
-        if self.settings['Paragraph Mode']:
-            self.lines.fill(lines)
-        else:
-            self.lines.fill(break_paragraphs(lines))
-
-    def show_dialog(self, message):
-        msg = QMessageBox(self)
-        msg.setIcon(QMessageBox.Information)
-        msg.setText(message)
-        msg.setStandardButtons(QMessageBox.Ok)
-        msg.show()
+        if not self.settings['Paragraph Mode']:
+            lines = break_paragraphs(lines)
+        print(lines, filter_lines(lines))
+        self.lines.fill(filter_lines(lines))
 
     @property
     def get_filename(self):
@@ -115,16 +109,14 @@ class Model(QMainWindow):
         sources = self.sources if self.settings['Include Sources'] else []
         lines = self.lines.get_data()
         if len(lines) == 0:
-            self.show_dialog("Error: Make sure to add some sentences.")
+            show_dialog("Error: Make sure to add some sentences.")
             return
-        questions = [line.replace(",", "") for line in lines] if self.settings['Remove Commas'] else lines
         try:
-            Worksheet(questions, title=title, loc=file_loc, sources=sources, key=False).render()
-            Worksheet(lines, title=title, loc=file_loc, sources=sources, key=True).render()
-            self.show_dialog("Worksheet has been created.")
+            create_worksheet(file_loc, title, lines, sources, self.settings)
+            show_dialog("Worksheet has been created.")
         except Exception as inst:
             print(inst)
-            self.show_dialog("Error: Make sure you close your word document before generating.")
+            show_dialog("Error: Make sure you close your word document before generating.")
         self.statusBar().showMessage('Ready')
 
     def center(self):
@@ -135,4 +127,6 @@ class Model(QMainWindow):
 
 
 def get_title(loc):
-    return loc[loc.rindex('/') + 1:loc.index('.')]
+    start = loc.rindex('/') + 1
+    end = loc.index('.')
+    return loc[start:end]

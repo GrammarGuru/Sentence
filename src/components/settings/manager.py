@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QMessageBox, QLabel
 import json
 import copy
-from ..widget_utils import style_label
+from src.widget_utils import style_label
 
 background_sheet = """
                     background-color: rgb(250, 250, 250)

@@ -2,7 +2,7 @@ import sys
 import json
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QTextEdit, QVBoxLayout, QHBoxLayout
 from PyQt5.QtGui import QPixmap
-from src.components.widget_utils import fill_layout, style_label
+from src.widget_utils import fill_layout, style_label
 import requests
 
 STYLE_LOC = 'config/pos.json'

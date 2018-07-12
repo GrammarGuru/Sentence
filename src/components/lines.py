@@ -2,7 +2,7 @@ import sys
 from PyQt5.QtWidgets import QWidget, \
     QTextEdit, QPushButton, QVBoxLayout, \
     QHBoxLayout, QApplication, QScrollArea, QSizePolicy
-from .widget_utils import fill_layout, style_btn
+from src.widget_utils import fill_layout, style_btn
 
 sheet = """
         color: rgb(66, 184, 221);
