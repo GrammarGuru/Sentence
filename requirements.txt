@@ -1,0 +1,6 @@
+PyQt5
+python-docx
+requests
+nltk
+pdfminer.six
+docx2txt
