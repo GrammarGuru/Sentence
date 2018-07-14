@@ -1,13 +1,13 @@
 import sys
-from src.components.news_controller.topic_controller import TopicController
-from src.components.file_manager import FileManager
-from src.components.sentence_writer import SentenceWriter
+
+from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QWidget, \
     QPushButton, \
     QHBoxLayout, QApplication
-from PyQt5.QtGui import QFont
-from src.widget_utils import fill_layout
 
+from src.components.file_manager import FileManager
+from src.components.news_controller.topic_controller import TopicController
+from src.widget_utils import fill_layout
 
 btn_sheet = """
         color: rgb(66, 184, 221);
@@ -44,7 +44,6 @@ class Controller(QWidget):
         self.topic_controller = TopicController(data, link_func, lines_func)
 
         fill_layout(self.layout,
-                    create_btn('Write', self.init_writer),
                     create_btn('Import', self.show_file_manager),
                     create_btn('News', self.show_news),
                     create_btn('Generate', generate_func))
@@ -53,10 +52,6 @@ class Controller(QWidget):
         layout = QHBoxLayout(self)
         layout.addStretch(1)
         return layout
-
-    def init_writer(self):
-        self.writer = SentenceWriter()
-        self.writer.show()
 
     def show_news(self):
         self.topic_controller.show()

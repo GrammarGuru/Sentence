@@ -1,15 +1,16 @@
 from PyQt5.QtWidgets import \
     QCheckBox
-from .manager import Manager
+
 from src.widget_utils import fill_layout
+from .manager import Manager
 
 background_sheet = """
                     background-color: rgb(250, 250, 250)
                    """
 
 
-class SheetManager(Manager):
-    def __init__(self, loc='config/worksheet.json', title='Worksheet Settings', update_func=None):
+class CheckboxManager(Manager):
+    def __init__(self, loc, title='Worksheet Settings', update_func=None):
         super().__init__(loc, title, update_func)
         settings = [self.create_setting(name, active) for name, active in self.settings.items()]
         fill_layout(self.layout, *settings)

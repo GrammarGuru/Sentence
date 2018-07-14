@@ -1,22 +1,28 @@
 import os
-from services.worksheet import create_worksheet
-from src.api.news import crawl, break_paragraphs
-from src.api.nlp import filter_lines
-from src.components.controller import Controller
-from src.components.lines import Lines
-from src.components.settings.pos_manager import PosManager
-from src.components.settings.sheet_manager import SheetManager
-from src.widget_utils import fill_layout, load_json, show_dialog
+import random
+
+from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtWidgets import QMainWindow, \
     QToolTip, \
     QDesktopWidget, QHBoxLayout, \
     QWidget, QVBoxLayout, \
     QFileDialog, QAction
-from PyQt5.QtGui import QFont, QIcon
+
+from services.worksheet import create_worksheet
+from src.api.news import crawl, break_paragraphs
+from src.api.nlp import filter_lines
+from src.components.controller import Controller
+from src.components.lines import Lines
+from src.components.settings.checkbox_manager import CheckboxManager
+from src.components.settings.pos_manager import PosManager
+from src.widget_utils import fill_layout, load_json, show_dialog
 
 background_sheet = """
                     background-color: rgb(250, 250, 250)
                    """
+
+WORKSHEET_SETTINGS = 'config/worksheet.json'
+WEB_SETTINGS = 'config/web.json'
 
 
 class Model(QMainWindow):
@@ -40,11 +46,19 @@ class Model(QMainWindow):
         menu_bar = self.menuBar()
 
         color_action = self.config_manager(PosManager(), 'Edit POS')
-        sheet_action = self.config_manager(SheetManager(update_func=self.load_settings), 'Worksheet Settings')
+        sheet_action = self.config_manager(CheckboxManager(loc=WORKSHEET_SETTINGS,
+                                                           title='Worksheet Settings',
+                                                           update_func=self.load_settings),
+                                           'Worksheet Settings')
+        web_actions = self.config_manager(CheckboxManager(loc=WEB_SETTINGS,
+                                                          title='Web Settings',
+                                                          update_func=self.load_settings),
+                                          'Web Settings')
 
         format_menu = menu_bar.addMenu('Format')
         format_menu.addAction(color_action)
         format_menu.addAction(sheet_action)
+        format_menu.addAction(web_actions)
 
     def set_layout(self):
         self.setCentralWidget(QWidget(self))
@@ -59,7 +73,7 @@ class Model(QMainWindow):
                                      lines_func=self.add_lines)
 
     def load_settings(self):
-        self.settings = load_json('config/worksheet.json')
+        self.settings = {**load_json(WORKSHEET_SETTINGS), **load_json(WEB_SETTINGS)}
 
     def format_window(self):
         self.resize(self.width, self.height)
@@ -91,7 +105,8 @@ class Model(QMainWindow):
             self.sources.append(link)
         if not self.settings['Paragraph Mode']:
             lines = break_paragraphs(lines)
-        print(lines, filter_lines(lines))
+        if self.settings['Randomize']:
+            random.shuffle(lines)
         self.lines.fill(filter_lines(lines))
 
     @property

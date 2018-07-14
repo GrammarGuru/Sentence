@@ -1,10 +1,27 @@
-import sys
-import os
 import ctypes
+import logging
+import os
+import sys
+
 from PyQt5.QtWidgets import QApplication
-from src.gui import Model
-from src.components.splash import Splash
+
 from src.api.news import get_data
+from src.components.splash import Splash
+from src.gui import Model
+
+
+def my_handler(type, value, tb):
+    logger.exception("Uncaught exception: {0}".format(str(value)))
+
+
+logger = logging.getLogger('logs')
+logger.setLevel(logging.DEBUG)
+fh = logging.FileHandler('logs.txt')
+fh.setLevel(logging.DEBUG)
+logger.addHandler(fh)
+
+# Install exception handler
+sys.excepthook = my_handler
 
 
 if __name__ == '__main__':
