@@ -1,4 +1,5 @@
 import sys
+import platform
 import os
 import ctypes
 from PyQt5.QtWidgets import QApplication
@@ -9,8 +10,9 @@ from src.api.news import get_data
 
 if __name__ == '__main__':
     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'config/auth.json'
-    my_app_id = 'Technius.GrammarGuru.Sentence'
-    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(my_app_id)
+    if platform.system() == 'Windows':
+        my_app_id = 'Technius.GrammarGuru.Sentence'
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(my_app_id)
 
     app = QApplication(sys.argv)
     

@@ -11,7 +11,7 @@ class FileManager(QWidget):
 
         self.input = QTextEdit()
 
-        btn_layout = QHBoxLayout(self)
+        btn_layout = QHBoxLayout()
         btn_layout.addStretch(2)
         fill_layout(btn_layout,
                     create_btn('Choose File', self.load_file),
