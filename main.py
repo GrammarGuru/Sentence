@@ -1,13 +1,12 @@
+import sys
+import os
+import platform
 import ctypes
 import logging
-import os
-import sys
-
 from PyQt5.QtWidgets import QApplication
-
-from src.api.news import get_data
-from src.components.splash import Splash
 from src.gui import Model
+from src.components.splash import Splash
+from src.api.news import get_data
 
 
 def my_handler(type, value, tb):
@@ -23,11 +22,11 @@ logger.addHandler(fh)
 # Install exception handler
 sys.excepthook = my_handler
 
-
 if __name__ == '__main__':
     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'config/auth.json'
-    my_app_id = 'Technius.GrammarGuru.Sentence'
-    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(my_app_id)
+    if platform.system() == 'Windows':
+        my_app_id = 'Technius.GrammarGuru.Sentence'
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(my_app_id)
 
     app = QApplication(sys.argv)
     

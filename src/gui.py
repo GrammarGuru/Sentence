@@ -124,14 +124,14 @@ class Model(QMainWindow):
         sources = self.sources if self.settings['Include Sources'] else []
         lines = self.lines.get_data()
         if len(lines) == 0:
-            show_dialog("Error: Make sure to add some sentences.")
+            show_dialog(self, "Error: Make sure to add some sentences.")
             return
         try:
             create_worksheet(file_loc, title, lines, sources, self.settings)
-            show_dialog("Worksheet has been created.")
+            show_dialog(self, "Worksheet has been created.")
         except Exception as inst:
             print(inst)
-            show_dialog("Error: Make sure you close your word document before generating.")
+            show_dialog(self, "Error: Make sure you close your word document before generating.")
         self.statusBar().showMessage('Ready')
 
     def center(self):
