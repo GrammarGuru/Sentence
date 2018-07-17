@@ -1,19 +1,17 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QMessageBox, QLabel
-import json
 import copy
+import json
+
+from PyQt5.QtWidgets import QVBoxLayout, QMessageBox, QLabel
+
+from src.components.window import Window
 from src.widget_utils import style_label
 
-background_sheet = """
-                    background-color: rgb(250, 250, 250)
-                   """
 
-
-class Manager(QWidget):
+class Manager(Window):
     def __init__(self, loc, title='Manager', update_func=None):
         super().__init__()
         self.loc = loc
         self.update_func = update_func
-        self.setStyleSheet(background_sheet)
         self.settings = load(loc)
         self.initSettings = copy.deepcopy(self.settings)
         self.layout = QVBoxLayout(self)

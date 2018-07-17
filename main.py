@@ -1,12 +1,13 @@
-import sys
-import platform
-import os
 import ctypes
-from PyQt5.QtWidgets import QApplication
-from src.gui import Model
-from src.components.splash import Splash
-from src.api.news import get_data
+import os
+import platform
+import sys
 
+from PyQt5.QtWidgets import QApplication
+
+from services.news import get_data
+from src.components.splash import Splash
+from src.gui import Model
 
 if __name__ == '__main__':
     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'config/auth.json'

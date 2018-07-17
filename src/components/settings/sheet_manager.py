@@ -1,11 +1,8 @@
 from PyQt5.QtWidgets import \
     QCheckBox
-from .manager import Manager
-from src.widget_utils import fill_layout
 
-background_sheet = """
-                    background-color: rgb(250, 250, 250)
-                   """
+from src.widget_utils import fill_layout
+from .manager import Manager
 
 
 class SheetManager(Manager):

@@ -1,30 +1,28 @@
 import os
-from services.worksheet import create_worksheet
-from src.api.news import crawl, break_paragraphs
-from src.api.nlp import filter_lines
-from src.components.controller import Controller
-from src.components.lines import Lines
-from src.components.settings.pos_manager import PosManager
-from src.components.settings.sheet_manager import SheetManager
-from src.widget_utils import fill_layout, load_json, show_dialog
-from PyQt5.QtWidgets import QMainWindow, \
+
+from PyQt5.QtGui import QFont, QIcon
+from PyQt5.QtWidgets import \
     QToolTip, \
     QDesktopWidget, QHBoxLayout, \
     QWidget, QVBoxLayout, \
     QFileDialog, QAction
-from PyQt5.QtGui import QFont, QIcon
 
-background_sheet = """
-                    background-color: rgb(250, 250, 250)
-                   """
+from services.news import crawl, break_paragraphs
+from services.nlp import filter_lines
+from services.worksheet import create_worksheet
+from src.components.controller import Controller
+from src.components.lines import Lines
+from src.components.settings.pos_manager import PosManager
+from src.components.settings.sheet_manager import SheetManager
+from src.components.window import MainWindow
+from src.widget_utils import fill_layout, load_json, show_dialog
 
 
-class Model(QMainWindow):
+class Model(MainWindow):
     def __init__(self, data, width=1200, height=800):
         super().__init__()
         self.data = data
         self.sources = []
-        self.setStyleSheet(background_sheet)
         self.width = width
         self.height = height
         self.load_settings()

@@ -1,7 +1,10 @@
 import os
+
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QTextEdit, QPushButton, QFileDialog, QMessageBox
+
+from services.nlp import get_sentences
 from src.widget_utils import fill_layout, style_btn
-from src.api.nlp import get_sentences
+
 
 class FileManager(QWidget):
     def __init__(self, lines_func):

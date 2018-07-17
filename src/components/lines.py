@@ -1,40 +1,18 @@
 import sys
+
 from PyQt5.QtWidgets import QWidget, \
-    QTextEdit, QPushButton, QVBoxLayout, \
-    QHBoxLayout, QApplication, QScrollArea, QSizePolicy
-from src.widget_utils import fill_layout, style_btn
+    QTextEdit, QVBoxLayout, \
+    QHBoxLayout, QApplication, QScrollArea
 
-sheet = """
-        color: rgb(66, 184, 221);
-        border-radius: 5px;
-        border: 2px solid rgb(66, 184, 221);
-        text-shadow 0 1px 1px rgba(0, 0, 0, 0.2);
-        background-color: rgb(255, 255, 255);
-        """
-
-add_sheet = """
-            color: rgb(232, 93, 117);
-            border-radius: 5px;
-            border: 2px solid rgb(232, 93, 117);
-            text-shadow 0 1px 1px rgba(0, 0, 0, 0.2);
-            background-color: rgb(255, 255, 255);
-            """
-
-background_sheet = """
-                    background-color: rgb(250, 250, 250)
-                   """
-
-box_sheet = """
-            background-color: white;
-            """
+from src.components.window import Window
+from src.widget_utils import fill_layout, create_btn
 
 
-class Lines(QWidget):
+class Lines(Window):
     def __init__(self, reset_func=None):
         super().__init__()
         self.size = 0
         self.reset_func = reset_func
-        self.setStyleSheet(background_sheet)
         self.layout = QVBoxLayout()
         self.lines = []
 
@@ -43,18 +21,9 @@ class Lines(QWidget):
 
         layout = self.get_layout()
 
-        add_btn = self.create_btn('Add', self.add_line)
-        clear_btn = self.create_btn('Reset', self.reset)
+        add_btn = create_control_btn('Add', self.add_line)
+        clear_btn = create_control_btn('Reset', self.reset)
         fill_layout(layout, add_btn, clear_btn)
-
-    def create_btn(self, title, on_click):
-        btn = QPushButton(title)
-        btn.setStyleSheet(sheet)
-        style_btn(btn, font_size=14)
-        btn.setMinimumHeight(40)
-        btn.resize(btn.minimumSize())
-        btn.clicked.connect(on_click)
-        return btn
 
     def get_layout(self):
         container = QWidget()
@@ -71,8 +40,7 @@ class Lines(QWidget):
 
         box = create_text_box()
         self.lines.append(box)
-        btn = create_remove_btn()
-        btn.clicked.connect(lambda x: self.remove_line(hbox, box, btn))
+        btn = create_remove_btn(lambda: self.remove_line(hbox, box, btn))
 
         index = self.size
         fill_layout(hbox, box, btn)
@@ -119,19 +87,19 @@ def create_scroll_area(container):
 
 def create_text_box():
     box = QTextEdit()
-    box.setStyleSheet(box_sheet)
     box.setMaximumHeight(100)
     box.setMinimumWidth(420)
-    sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-    box.setSizePolicy(sizePolicy)
     return box
 
 
-def create_remove_btn():
-    btn = QPushButton('X')
-    btn.setStyleSheet(add_sheet)
-    btn.setMaximumSize(40, 40)
-    btn.setMinimumSize(35, 35)
+def create_remove_btn(on_click):
+    return create_btn('X', on_click, style='warning', size=(40, 40))
+
+
+def create_control_btn(title, on_click):
+    btn = create_btn(title, on_click)
+    btn.setMinimumHeight(40)
+    btn.resize(btn.minimumSize())
     return btn
 
 
