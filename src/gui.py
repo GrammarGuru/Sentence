@@ -19,9 +19,10 @@ from src.widget_utils import fill_layout, load_json, show_dialog
 
 
 class Model(MainWindow):
-    def __init__(self, data, width=1200, height=800):
+    def __init__(self, news_data, web_data, width=1200, height=800):
         super().__init__()
-        self.data = data
+        self.news_data = news_data
+        self.web_data = web_data
         self.sources = []
         self.width = width
         self.height = height
@@ -51,7 +52,8 @@ class Model(MainWindow):
 
     def load_components(self):
         self.lines = Lines(reset_func=self.reset)
-        self.controller = Controller(data=self.data,
+        self.controller = Controller(news_data=self.news_data,
+                                     web_data=self.web_data,
                                      generate_func=self.generate,
                                      link_func=self.add_link,
                                      lines_func=self.add_lines)

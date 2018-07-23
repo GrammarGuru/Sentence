@@ -10,16 +10,16 @@ from src.widget_utils import fill_layout, create_btn
 
 
 class Controller(Window):
-    def __init__(self, data, generate_func, link_func, lines_func):
+    def __init__(self, news_data, web_data, generate_func, link_func, lines_func):
         super().__init__()
-        self.data = data
-        self.link_func = link_func
         self.lines_func = lines_func
         self.layout = self.init_layout()
-        self.topic_controller = TopicController(data, link_func, lines_func)
+        self.topic_controller = TopicController(news_data, link_func, lines_func)
+        self.web_controller = TopicController(web_data, link_func, lines_func, manual=False)
 
         fill_layout(self.layout,
                     create('Import', self.show_file_manager),
+                    create('Web', self.show_web),
                     create('News', self.show_news),
                     create('Generate', generate_func))
         
@@ -30,6 +30,9 @@ class Controller(Window):
 
     def show_news(self):
         self.topic_controller.show()
+
+    def show_web(self):
+        self.web_controller.show()
 
     def show_file_manager(self):
         self.file_manager = FileManager(self.lines_func)
