@@ -105,7 +105,8 @@ class Model(MainWindow):
         lines = filter_lines(lines, self.settings['Paragraph Mode'])
         if self.settings['Randomize']:
             random.shuffle(lines)
-        self.lines.fill(lines)
+        length = int(1.5 * self.lines.size)
+        self.lines.fill(lines[0:length])
 
     @property
     def get_filename(self):

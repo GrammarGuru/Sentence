@@ -59,7 +59,6 @@ def parse(line):
 
 
 def filter_lines(lines, paragraph_mode=False):
-    print(lines)
     response = post(URL + 'filter', {'lines': lines}).json()
     if paragraph_mode:
         return [' '.join(lines) for lines in response]
