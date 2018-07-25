@@ -1,14 +1,15 @@
-import sys
-import platform
-import os
 import ctypes
 import logging
+import os
+import platform
+import sys
 
 from PyQt5.QtWidgets import QApplication
 
 from services import news, web
 from src.components.splash import Splash
 from src.gui import Model
+
 
 def my_handler(type, value, tb):
     logger.exception("Uncaught exception: {0}".format(str(value)))
@@ -33,8 +34,9 @@ if __name__ == '__main__':
     
     splash = Splash('assets/splash_logo.png')
     splash.show()
-    data = get_data()
-    ex = Model(data)
+    news_data = news.get_data()
+    web_data = web.get_data()
+    ex = Model(news_data, web_data)
     ex.show()
     splash.finish(ex)
     sys.exit(app.exec_())

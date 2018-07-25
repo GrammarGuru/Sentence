@@ -1,4 +1,3 @@
-import requests
 import json
 from enum import Enum
 
@@ -58,11 +57,14 @@ def parse(line):
     data = post(URL + 'parseLine', {'line': line}).json()
     return {'doc': data['words'], 'pos': parse_pos(data['pos'])}
 
+
 def filter_lines(lines, paragraph_mode=False):
+    print(lines)
     response = post(URL + 'filter', {'lines': lines}).json()
     if paragraph_mode:
         return [' '.join(lines) for lines in response]
     return [line for lines in response for line in lines]
+
 
 def post(url, body):
     r = requests.post(url, body)

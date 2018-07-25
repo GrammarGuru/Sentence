@@ -1,4 +1,5 @@
 import os
+import random
 
 from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtWidgets import \
@@ -14,13 +15,12 @@ from src.components.controller import Controller
 from src.components.lines import Lines
 from src.components.settings.checkbox_manager import CheckboxManager
 from src.components.settings.pos_manager import PosManager
-from src.components.settings.sheet_manager import SheetManager
 from src.components.window import MainWindow
 from src.widget_utils import fill_layout, load_json, show_dialog
 
-
 WORKSHEET_SETTINGS = 'config/worksheet.json'
 WEB_SETTINGS = 'config/web.json'
+
 
 class Model(MainWindow):
     def __init__(self, news_data, web_data, width=1200, height=800):

@@ -1,5 +1,4 @@
 {
-  "Paragraph Mode": true,
-  "Include Sources": true,
+  "Include Sources": false,
   "Remove Commas": true
 }
