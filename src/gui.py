@@ -1,36 +1,33 @@
 import os
-import random
 
 from PyQt5.QtGui import QFont, QIcon
-from PyQt5.QtWidgets import QMainWindow, \
+from PyQt5.QtWidgets import \
     QToolTip, \
     QDesktopWidget, QHBoxLayout, \
     QWidget, QVBoxLayout, \
     QFileDialog, QAction
 
+from services.news import crawl
+from services.nlp import filter_lines
 from services.worksheet import create_worksheet
-from src.api.news import crawl, break_paragraphs
-from src.api.nlp import filter_lines
 from src.components.controller import Controller
 from src.components.lines import Lines
 from src.components.settings.checkbox_manager import CheckboxManager
 from src.components.settings.pos_manager import PosManager
+from src.components.settings.sheet_manager import SheetManager
+from src.components.window import MainWindow
 from src.widget_utils import fill_layout, load_json, show_dialog
 
-background_sheet = """
-                    background-color: rgb(250, 250, 250)
-                   """
 
 WORKSHEET_SETTINGS = 'config/worksheet.json'
 WEB_SETTINGS = 'config/web.json'
 
-
-class Model(QMainWindow):
-    def __init__(self, data, width=1200, height=800):
+class Model(MainWindow):
+    def __init__(self, news_data, web_data, width=1200, height=800):
         super().__init__()
-        self.data = data
+        self.news_data = news_data
+        self.web_data = web_data
         self.sources = []
-        self.setStyleSheet(background_sheet)
         self.width = width
         self.height = height
         self.load_settings()
@@ -67,7 +64,8 @@ class Model(QMainWindow):
 
     def load_components(self):
         self.lines = Lines(reset_func=self.reset)
-        self.controller = Controller(data=self.data,
+        self.controller = Controller(news_data=self.news_data,
+                                     web_data=self.web_data,
                                      generate_func=self.generate,
                                      link_func=self.add_link,
                                      lines_func=self.add_lines)
@@ -103,11 +101,11 @@ class Model(QMainWindow):
     def add_lines(self, lines, link=None):
         if link is not None and self.settings['Include Sources']:
             self.sources.append(link)
-        if not self.settings['Paragraph Mode']:
-            lines = break_paragraphs(lines)
+        self.lines.fill(filter_lines(lines))
+        lines = filter_lines(lines, self.settings['Paragraph Mode'])
         if self.settings['Randomize']:
             random.shuffle(lines)
-        self.lines.fill(filter_lines(lines))
+        self.lines.fill(lines)
 
     @property
     def get_filename(self):

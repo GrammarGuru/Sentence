@@ -2,8 +2,7 @@ import os
 
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QTextEdit, QPushButton, QFileDialog, QMessageBox
 
-from services.filereaders.read_file import read_file
-from src.api.nlp import get_sentences
+from services.nlp import get_sentences
 from src.widget_utils import fill_layout, style_btn
 
 
@@ -25,8 +24,7 @@ class FileManager(QWidget):
 
     def load_file(self):
         filename = QFileDialog.getOpenFileName(self, 'Open File', os.path.expanduser('~\\Documents'))[0]
-        text = read_file(filename)
-        self.input.setText(text)
+        print(filename)
 
     def send_lines(self):
         try:

@@ -1,5 +1,7 @@
-import requests
 import json
+
+import requests
+
 from .nlp import get_sentences
 
 with open('config/api.json') as f:

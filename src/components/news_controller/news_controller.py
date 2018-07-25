@@ -1,22 +1,11 @@
-from src.components.link_label import LinkLabel
-from src.widget_utils import fill_layout
-from PyQt5.QtWidgets import QWidget, \
-    QPushButton, \
+from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import \
     QVBoxLayout, QLabel, \
     QMessageBox, QGridLayout
 
-from PyQt5.QtGui import QFont
-
-background_sheet = """
-                    background-color: rgb(250, 250, 250)
-                   """
-btn_sheet = """
-        color: rgb(255, 255, 255);
-        border-radius: 5px;
-        border: 2px solid rgb(66, 184, 221);
-        text-shadow 0 1px 1px rgba(0, 0, 0, 0.2);
-        background-color: rgb(66, 184, 221);
-        """
+from src.components.link_label import LinkLabel
+from src.components.window import Window
+from src.widget_utils import fill_layout, create_btn
 
 header_sheet = """
                 color: rgb(66, 184, 221);
@@ -30,17 +19,9 @@ def create_label(name):
     return label
 
 
-def create_btn(on_click):
-    btn = QPushButton('Add')
-    btn.setStyleSheet(btn_sheet)
-    btn.clicked.connect(on_click)
-    return btn
-
-
-class NewsController(QWidget):
+class NewsController(Window):
     def __init__(self, topic, articles, lines_func):
         super().__init__()
-        self.setStyleSheet(background_sheet)
         self.lines_func = lines_func
         self.articles = articles
         self.layout = QVBoxLayout(self)
@@ -51,7 +32,7 @@ class NewsController(QWidget):
         for index, article in enumerate(self.articles):
             label = LinkLabel(article['title'].strip(), article['url'], font_size=12)
             callback = lambda _, lines=article['lines'], link=article['url']: self.send_lines(lines, link)
-            btn = create_btn(callback)
+            btn = create_btn('Add', callback, style='secondary')
             grid.addWidget(label, index + 1, 0)
             grid.addWidget(btn, index + 1, 1)
 

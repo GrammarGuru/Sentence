@@ -1,9 +1,23 @@
+import requests
 import json
+from enum import Enum
 
 import requests
 from nltk import sent_tokenize
 
-from ..pos import POS
+
+class POS(Enum):
+    Noun = 0  # Blue
+    Verb = 1  # Green
+    DirectObject = 2  # Yellow
+    IndirectObject = 3  # Orange
+    PredicateNominative = 4  # Pink
+    PredicateAdjective = 5  # Purple
+    PrepositionalPhrase = 6
+    Appositive = 7
+    Participle = 8
+    Infinitive = 9
+
 
 with open('config/api.json') as f:
     URL = json.load(f)['url']
@@ -44,12 +58,14 @@ def parse(line):
     data = post(URL + 'parseLine', {'line': line}).json()
     return {'doc': data['words'], 'pos': parse_pos(data['pos'])}
 
-
-def filter_lines(lines):
-    return post(URL + 'filter', {'lines': lines}).json()
-
+def filter_lines(lines, paragraph_mode=False):
+    response = post(URL + 'filter', {'lines': lines}).json()
+    if paragraph_mode:
+        return [' '.join(lines) for lines in response]
+    return [line for lines in response for line in lines]
 
 def post(url, body):
     r = requests.post(url, body)
     r.raise_for_status()
     return r
+

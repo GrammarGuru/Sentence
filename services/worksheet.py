@@ -1,10 +1,12 @@
-from docx import Document
-from docx.shared import RGBColor
-from docx.shared import Pt, Inches
-from docx.enum.text import WD_PARAGRAPH_ALIGNMENT, WD_LINE_SPACING
-from src.pos import POS
-from src.api.nlp import parse_all
 import json
+
+from docx import Document
+from docx.enum.text import WD_PARAGRAPH_ALIGNMENT, WD_LINE_SPACING
+from docx.shared import Pt, Inches
+from docx.shared import RGBColor
+
+from services.nlp import POS
+from services.nlp import parse_all
 
 PUNCT = {',', '.', '-', "'s", "'m", '?', "n't"}
 

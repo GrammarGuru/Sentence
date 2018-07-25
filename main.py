@@ -1,13 +1,14 @@
 import sys
-import os
 import platform
+import os
 import ctypes
 import logging
-from PyQt5.QtWidgets import QApplication
-from src.gui import Model
-from src.components.splash import Splash
-from src.api.news import get_data
 
+from PyQt5.QtWidgets import QApplication
+
+from services import news, web
+from src.components.splash import Splash
+from src.gui import Model
 
 def my_handler(type, value, tb):
     logger.exception("Uncaught exception: {0}".format(str(value)))
