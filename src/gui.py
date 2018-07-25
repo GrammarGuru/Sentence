@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import \
     QWidget, QVBoxLayout, \
     QFileDialog, QAction
 
-from services.news import crawl, break_paragraphs
+from services.news import crawl
 from services.nlp import filter_lines
 from services.worksheet import create_worksheet
 from src.components.controller import Controller
@@ -89,9 +89,8 @@ class Model(MainWindow):
     def add_lines(self, lines, link=None):
         if link is not None and self.settings['Include Sources']:
             self.sources.append(link)
-        if not self.settings['Paragraph Mode']:
-            lines = break_paragraphs(lines)
-        self.lines.fill(filter_lines(lines))
+        lines = filter_lines(lines, self.settings['Paragraph Mode'])
+        self.lines.fill(lines)
 
     @property
     def get_filename(self):

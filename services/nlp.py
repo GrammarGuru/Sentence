@@ -58,5 +58,9 @@ def parse(line):
     return {'doc': data['words'], 'pos': parse_pos(data['pos'])}
 
 
-def filter_lines(lines):
-    return requests.post(URL + 'filter', {'lines': lines}).json()
+def filter_lines(lines, paragraph_mode=False):
+    response = requests.post(URL + 'filter', {'lines': lines}).json()
+    print(response)
+    if paragraph_mode:
+        return [' '.join(lines) for lines in response]
+    return [line for lines in response for line in lines]
