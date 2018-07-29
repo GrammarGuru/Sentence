@@ -7,7 +7,7 @@ with open('config/api.json') as f:
 
 
 def get_data():
-    data = requests.get(URL + '/getWeb').json()
+    data = requests.get(URL + 'getWeb').json()
     for key in data.keys():
         data[key] = json.loads(data[key])[:20]  # TODO: Remove later
     return data
