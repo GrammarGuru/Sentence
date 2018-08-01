@@ -5,7 +5,7 @@ from services.utils import post
 
 with open('config/api.json') as f:
     data = json.load(f)
-    FUNCTIONS = data['local']
+    FUNCTIONS = data['functions']
 
 PUNCT = {',', '.', '-', "'s", "'m", '?', "n't"}
 
