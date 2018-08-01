@@ -1,33 +1,54 @@
 import json
 from os import path
 
-import requests
+from services.utils import post
 
 with open('config/api.json') as f:
     data = json.load(f)
-    URL = data['url']
     FUNCTIONS = data['local']
 
 PUNCT = {',', '.', '-', "'s", "'m", '?', "n't"}
 
+POS_API_MAP = {
+    'Subject': 'nounColor',
+    'Verb': 'verbColor',
+    'PA': 'predicateAdjectiveColor',
+    'PN': 'predicateNominativeColor',
+    'DO': 'directObjectColor',
+    'IO': 'indirectObjectColor',
+    'Preposition': 'prepositionColor',
+    'Appositive': 'appositiveColor',
+    'Participle': 'participleColor',
+    'Infinitive': 'infinitiveColor',
+}
+
 
 def create_worksheet(sheet_loc, title, lines, sources, settings):
     key_loc = '{} (Key){}'.format(*path.splitext(sheet_loc))
-    lines = requests.post(URL + 'parseLines', {'lines': lines}).json()
-    with open('config/pos.json') as f:
-        pos = json.load(f)
-    print(lines)
-    response = requests.post(FUNCTIONS + 'worksheet', json={
-        'title': title,
-        'sources': sources,
-        'removeCommas': settings['Remove Commas'],
-        'lines': lines,
-        'pos': pos
-    }).content
-
-    sheet, key = tuple(response.split(b', '))
+    body = create_request_body(title, lines, sources, settings)
+    print(body)
+    response = post(FUNCTIONS + 'worksheet', json=body).content
+    print(response)
+    sheet, key = tuple(response.split(b', key: '))
     write(sheet_loc, sheet)
     write(key_loc, key)
+
+
+def create_request_body(title, lines, sources, settings):
+    result = {
+        'title': title,
+        'lines': lines,
+        'sources': sources,
+        'settings': settings
+    }
+    with open('config/pos.json') as f:
+        pos = json.load(f)
+
+    for name, style in pos.items():
+        if style['active']:
+            result[POS_API_MAP[name]] = style['rgb']
+
+    return result
 
 
 def write(loc, content):

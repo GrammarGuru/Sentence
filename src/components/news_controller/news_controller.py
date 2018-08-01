@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import \
     QVBoxLayout, QLabel, \
     QMessageBox, QGridLayout
 
+from services.news import get_article
 from src.components.link_label import LinkLabel
 from src.components.window import Window
 from src.widget_utils import fill_layout, create_btn
@@ -31,15 +32,16 @@ class NewsController(Window):
         title = create_label('Category: {}'.format(topic))
         for index, article in enumerate(self.articles):
             label = LinkLabel(article['title'].strip(), article['url'], font_size=12)
-            callback = lambda _, lines=article['lines'], link=article['url']: self.send_lines(lines, link)
+            callback = lambda _, id=article['id'], link=article['url']: self.send_lines(id, link)
             btn = create_btn('Add', callback, style='secondary')
             grid.addWidget(label, index + 1, 0)
             grid.addWidget(btn, index + 1, 1)
 
         fill_layout(self.layout, title, grid)
 
-    def send_lines(self, lines, link):
+    def send_lines(self, article_id, link):
         try:
+            lines = get_article(article_id)
             self.lines_func(lines, link)
             self.close()
         except Exception as inst:

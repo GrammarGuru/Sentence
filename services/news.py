@@ -1,7 +1,6 @@
 import json
 
-import requests
-
+from services.utils import get
 from .nlp import get_sentences
 
 with open('config/api.json') as f:
@@ -9,11 +8,15 @@ with open('config/api.json') as f:
 
 
 def get_data():
-    return requests.post(URL + 'getNews', {'file': 'data.json'}).json()
+    return get(URL + 'news').json()
+
+
+def get_article(article_id):
+    return get('{}news/{}'.format(URL, article_id)).json()
 
 
 def crawl(url):
-    return requests.post(URL + 'scrape', data={'url': url}).json()
+    return get(URL + 'scrape', params={'url': url}).json()
 
 
 def break_paragraphs(paragraphs):

@@ -21,7 +21,7 @@
   },
   "DO": {
     "id": 2,
-    "active": false,
+    "active": true,
     "name": "Direct Object",
     "rgb": [
       255,
@@ -31,7 +31,7 @@
   },
   "IO": {
     "id": 3,
-    "active": false,
+    "active": true,
     "name": "Indirect Object",
     "rgb": [
       211,
@@ -71,7 +71,7 @@
   },
   "Appositive": {
     "id": 7,
-    "active": true,
+    "active": false,
     "name": "Appositive Phrase",
     "rgb": [
       85,
@@ -81,7 +81,7 @@
   },
   "Participle": {
     "id": 8,
-    "active": true,
+    "active": false,
     "name": "Participle Phrase",
     "rgb": [
       85,
@@ -91,7 +91,7 @@
   },
   "Infinitive": {
     "id": 9,
-    "active": true,
+    "active": false,
     "name": "Infinitive Phrase",
     "rgb": [
       255,

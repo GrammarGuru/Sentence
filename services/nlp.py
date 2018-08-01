@@ -1,8 +1,9 @@
 import json
 from enum import Enum
 
-import requests
 from nltk import sent_tokenize
+
+from services.utils import get
 
 
 class POS(Enum):
@@ -49,24 +50,15 @@ def parse_pos(pos):
 
 
 def parse_all(lines):
-    data = post(URL + 'parseLines', {'lines': lines}).json()
-    return [{'doc': line['words'], 'pos': parse_pos(line['pos'])} for line in data]
-
-
-def parse(line):
-    data = post(URL + 'parseLine', {'line': line}).json()
-    return {'doc': data['words'], 'pos': parse_pos(data['pos'])}
+    data = get(URL + 'labels', params={'line': lines}).json()
+    if type(data) == list:
+        return [{'doc': line['words'], 'pos': parse_pos(line['pos'])} for line in data]
+    return [{'doc': data['words'], 'pos': parse_pos(data['pos'])}]
 
 
 def filter_lines(lines, paragraph_mode=False):
-    response = post(URL + 'filter', {'lines': lines}).json()
+    response = get(URL + 'filter', {'lines': lines}).json()
     if paragraph_mode:
         return [' '.join(lines) for lines in response]
     return [line for lines in response for line in lines]
-
-
-def post(url, body):
-    r = requests.post(url, body)
-    r.raise_for_status()
-    return r
 
