@@ -5,7 +5,6 @@ from services.filereaders import pdfreader, wordreader
 
 def read_file(path):
     type = os.path.splitext(path)[1]
-    print(type)
     return {
         '.docx': wordreader.read,
         '.pdf': pdfreader.read

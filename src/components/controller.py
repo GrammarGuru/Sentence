@@ -19,7 +19,7 @@ class Controller(Window):
 
         fill_layout(self.layout,
                     create('Import', self.show_file_manager),
-                    create('Web', self.show_web),
+                    # create('Web', self.show_web),
                     create('News', self.show_news),
                     create('Generate', generate_func))
         

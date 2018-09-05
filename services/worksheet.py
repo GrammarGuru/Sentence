@@ -26,9 +26,7 @@ POS_API_MAP = {
 def create_worksheet(sheet_loc, title, lines, sources, settings):
     key_loc = '{} (Key){}'.format(*path.splitext(sheet_loc))
     body = create_request_body(title, lines, sources, settings)
-    print(body)
     response = post(FUNCTIONS + 'worksheet', json=body).content
-    print(response)
     sheet, key = tuple(response.split(b', key: '))
     write(sheet_loc, sheet)
     write(key_loc, key)

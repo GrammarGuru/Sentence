@@ -24,7 +24,6 @@ class FileManager(QWidget):
 
     def load_file(self):
         filename = QFileDialog.getOpenFileName(self, 'Open File', os.path.expanduser('~\\Documents'))[0]
-        print(filename)
 
     def send_lines(self):
         try:
