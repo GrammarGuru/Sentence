@@ -71,7 +71,7 @@
   },
   "Appositive": {
     "id": 7,
-    "active": false,
+    "active": true,
     "name": "Appositive Phrase",
     "rgb": [
       85,
@@ -81,7 +81,7 @@
   },
   "Participle": {
     "id": 8,
-    "active": false,
+    "active": true,
     "name": "Participle Phrase",
     "rgb": [
       85,
@@ -91,12 +91,12 @@
   },
   "Infinitive": {
     "id": 9,
-    "active": false,
+    "active": true,
     "name": "Infinitive Phrase",
     "rgb": [
-      255,
-      170,
-      255
+      252,
+      0,
+      191
     ]
   }
 }

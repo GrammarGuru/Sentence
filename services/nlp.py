@@ -3,7 +3,7 @@ from enum import Enum
 
 from nltk import sent_tokenize
 
-from services.utils import get
+from services.utils import post
 
 
 class POS(Enum):
@@ -50,14 +50,14 @@ def parse_pos(pos):
 
 
 def parse_all(lines):
-    data = get(URL + 'labels', params={'line': lines}).json()
+    data = post(URL + 'labels', {'lines': lines}).json()
     if type(data) == list:
         return [{'doc': line['words'], 'pos': parse_pos(line['pos'])} for line in data]
     return [{'doc': data['words'], 'pos': parse_pos(data['pos'])}]
 
 
 def filter_lines(lines, paragraph_mode=False):
-    response = get(URL + 'filter', {'lines': lines}).json()
+    response = post(URL + 'filter', {'lines': lines}).json()
     if paragraph_mode:
         return [' '.join(lines) for lines in response]
     return [line for lines in response for line in lines]

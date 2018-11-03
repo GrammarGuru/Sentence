@@ -1,5 +1,6 @@
 {
   "local": "http://localhost:8080/",
   "url": "https://sentence-92ceb.appspot.com/",
-  "functions": "https://functions-dot-sentence-92ceb.appspot.com/"
+  "functions": "https://functions-dot-sentence-92ceb.appspot.com/",
+  "localFunctions": "http://localhost:2000/"
 }
